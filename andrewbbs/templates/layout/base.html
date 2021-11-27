@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <script>
+      _386 = { onePass: true, speedFactor: 1.25 };
+    </script>
+
+    <meta charset="UTF-8">
+    <title>Andrew BBS</title>
+    <link rel="stylesheet" href="{% static 'css/386/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/386/bootstrap-responsive.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="nav-collapse collapse">
+              <ul class="nav navbar-nav">
+                  <li>
+                      <a href="/">ANDREW BBS</a>
+                  </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+
+</html>

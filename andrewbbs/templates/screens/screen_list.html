@@ -1,0 +1,25 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+<h3 class="text-center">Screens Unlocked</h3>
+<table class=table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for screen in screen_list %}
+    <tr>
+      <td>
+        <a href="{% url 'screen-detail' screen.slug %}">
+          {{ screen.title }}
+        </a>
+      </td>
+      <td>{{ screen.created_at }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+{% endblock %}
