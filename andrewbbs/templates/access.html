@@ -4,12 +4,13 @@
   <div class="row-fluid">
     <div class="col span12">
       <div class="centered-box text-center light-green-box">
+        {{ msg }}
         <form class="form" method="POST" action="">
           {% csrf_token %}
           <div class="control-group">
             <div class="controls">
                 <label class="info">Enter Access Code</label>
-            <input type="text" id="code" name="code" />
+                {{ form.as_p }}
             </div>
           </div>
           <div class="control-group">
