@@ -1,10 +1,5 @@
 from django import forms
 
-from .models import AccessCode
-
-class AccessCodeForm(forms.ModelForm):
-    class Meta:
-        model = AccessCode
-        fields = ['code']
-        labels = {'code': ''}
+class AccessCodeForm(forms.Form):
+   code = forms.CharField(max_length=100, label="") 
 
