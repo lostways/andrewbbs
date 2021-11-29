@@ -1,7 +1,10 @@
-body { visibility: hidden  }
+body { 
+  visibility: hidden;
+  padding: 0px;
+}
 
-.container {
-    width: 100%;
+.container-fluid {
+  padding: 0px;
 }
 
 .content {

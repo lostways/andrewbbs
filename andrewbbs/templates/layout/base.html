@@ -18,7 +18,7 @@
     <div class="container-fluid">
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
-          <div class="nav-collapse collapse">
+          <div class="nav">
               <ul class="nav navbar-nav">
                   <li>
                       <a href="/">ANDREW BBS</a>
@@ -27,10 +27,17 @@
           </div>
         </div>
       </div>
-    </div>
     
-    <div class="content">
-      {% block content %}{% endblock %}
+      <div class="content">
+        <div class="row-fluid">
+          <div class="col span12">
+            <div class="ascii-header">
+              <img class="no-filter" src="{% static 'img/andrew-bbs-grey.png' %}" />
+            </div>
+          </div>
+        </div>
+        {% block content %}{% endblock %}
+      </div>
     </div>
     <script src="{% static 'js/app.js' %}"></script>
   </body>

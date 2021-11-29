@@ -21,5 +21,6 @@ def access(request):
         form = AccessCodeForm(data=request.POST)
         if form.is_valid():
             msg = "worked!"
+
     context = {'form':form, 'msg': msg}
     return render(request, 'access.html', context)

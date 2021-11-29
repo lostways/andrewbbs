@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('screens/', include("andrewbbs.urls")),
     path(
-        "access",
+        "",
         views.access,
         name="access",
     ),
