@@ -9,8 +9,13 @@ urlpatterns = [
         name="screen-list",
     ),
     path(
-        "<slug:slug>",
+        "screen/<slug:slug>",
         views.detail,
         name="screen-detail",
+    ),
+    path(
+        "access",
+        views.access,
+        name="access",
     ),
 ]

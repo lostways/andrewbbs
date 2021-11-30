@@ -17,9 +17,10 @@
           {{ screen.title }}
         </a>
       </td>
-      <td>{{ screen.created_at }}</td>
+      <td>{{ screen.updated_at }}</td>
     </tr>
 {% endfor %}
   </tbody>
 </table>
+<a href="{% url 'access' %}" class="btn">New Access Code</a>
 {% endblock %}

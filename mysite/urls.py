@@ -19,10 +19,5 @@ from andrewbbs import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('screens/', include("andrewbbs.urls")),
-    path(
-        "",
-        views.access,
-        name="access",
-    ),
+    path('', include("andrewbbs.urls")),
 ]
