@@ -9,12 +9,15 @@ class AccessCode(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     class Meta:
         ordering = ['code']
 
     def __str__(self):
         return self.code
+
+    def has_screens(self):
+        return Screen.objects.filter(codes__in=[self]).exists()
 
 class Screen(models.Model):
     body = models.TextField()
@@ -28,7 +31,7 @@ class Screen(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    codes = models.ManyToManyField(AccessCode)  
+    codes = models.ManyToManyField(AccessCode, blank=True)  
 
     class Meta:
         ordering = ['-created_at']

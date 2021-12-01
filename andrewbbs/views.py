@@ -9,19 +9,28 @@ def index(request):
         codes = request.session['codes'] 
         screens = Screen.objects.filter(
             codes__code__in=codes,
-            codes__valid=True
         ).distinct().order_by("-updated_at")
+
+        if screens:
+            screen_ids = [screen.pk for screen in screens]
+            unlocked_screens = request.session.get('screens', [])
+            for screen_id in screen_ids:
+                unlocked_screens.append(screen_id)
+            request.session['screens'] = list(set(unlocked_screens))
 
         context = {
             'screen_list': screens,
             'page_title': "Sreens"
         }
         return render(request, 'screens/screen_list.html', context)
-    else:
-        return access(request)
+
+    return access(request)
 
 def detail(request, slug):
-    screen = get_object_or_404(Screen, slug=slug)
+    codes = request.session.get('codes', [])
+    screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
+    screen = get_object_or_404(screen)
+
     context = {
         'screen': screen,
         'page_title': screen.title
@@ -30,25 +39,35 @@ def detail(request, slug):
 
 def access(request):
     """Enter Access Code"""
-    msg = "Initial"
+
+    codes = request.session.get('codes', [])
+    screens = request.session.get('screens', [])
+
+    msg = repr(codes) + repr(screens)
+
     if request.method == 'POST':
         form = AccessCodeForm(data=request.POST)
         if form.is_valid():
             entered_code = form.cleaned_data['code']
-            if AccessCode.objects.filter(
+
+            valid_code = AccessCode.objects.get(
                 code=entered_code,
                 valid=True
-            ).exists():
-                codes = request.session.get('codes', [])
+            )
+
+            if valid_code:
                 codes.append(entered_code)
                 request.session['codes'] = list(set(codes))
-                return redirect("screen-list")
+
+                if valid_code.has_screens():
+                    return redirect("screen-list")
 
     form = AccessCodeForm()
-    msg = repr(request.session.get('codes',[]))
     context = {
         'form':form,
         'msg': msg,
         'page_title': "Enter Access Code"
     }
     return render(request, 'access.html', context)
+
+
