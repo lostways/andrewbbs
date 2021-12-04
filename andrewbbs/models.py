@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class AccessCode(models.Model):
     code = models.CharField(max_length=100, unique=True)
-    valid = models.BooleanField(default=True)
+    enabled = models.BooleanField(default=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -31,7 +31,8 @@ class Screen(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    codes = models.ManyToManyField(AccessCode, blank=True)  
+    codes = models.ManyToManyField(AccessCode, blank=True,
+                                   related_name="screens")  
 
     class Meta:
         ordering = ['-created_at']

@@ -10,7 +10,7 @@ class ScreenAdmin(admin.ModelAdmin):
     search_fields = ('title', 'body')
 
 class AccessCodeAdmin(admin.ModelAdmin):
-    list_display = ('code', 'valid')
+    list_display = ('code', 'enabled')
     search_fields = ('title', 'body')
 
 admin.site.register(Screen, ScreenAdmin)

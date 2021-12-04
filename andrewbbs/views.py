@@ -52,7 +52,7 @@ def access(request):
 
             valid_code = AccessCode.objects.get(
                 code=entered_code,
-                valid=True
+                enabled=True
             )
 
             if valid_code:

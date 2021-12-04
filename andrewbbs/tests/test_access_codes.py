@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import AccessCode
+from ..models import AccessCode
 
 # Create your tests here.
 
@@ -37,4 +37,14 @@ class AccessCodeTestCase(TestCase):
 
         self.assertEqual(codes_valid.count(), 3)
         self.assertEqual(codes_invalid.count(), 0)
-        
+
+    def test_disable_code(self):
+        AccessCode.objects.create(code="testCaseCode000", enabled=False)
+        codes_array = self.valid_codes_array
+        codes_array.append("testCaseCode000")
+
+        codes_valid = AccessCode.objects.filter(code__in=codes_array,
+                                                enabled=True)
+
+        self.assertEqual(codes_valid.count(), 3)
+
