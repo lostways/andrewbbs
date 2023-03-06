@@ -1,7 +1,10 @@
 {% extends 'layout/base.html' %}
+{% load markdown_extras %}
 
 {% block content %}
-<h3 class="text-center">{{ screen.title }}</h3>
+<h3 class="text-center page-header">{{ screen.title }}</h3>
 
-{{ screen.body }}
+{{ screen.body | markdown | safe }}
+
+<a href="{% url 'screen-list' %}" class="btn">Back to Screens</a>
 {% endblock %}
