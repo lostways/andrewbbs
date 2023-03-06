@@ -1,0 +1,6 @@
+FROM python:3.9-alpine as app
+EXPOSE 8000
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
