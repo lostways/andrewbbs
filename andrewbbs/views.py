@@ -50,10 +50,13 @@ def access(request):
         if form.is_valid():
             entered_code = form.cleaned_data['code']
 
-            valid_code = AccessCode.objects.get(
-                code=entered_code,
-                enabled=True
-            )
+            try:
+                valid_code = AccessCode.objects.get(
+                    code=entered_code,
+                    enabled=True
+                )
+            except AccessCode.DoesNotExist:
+                valid_code = None
 
             if valid_code:
                 codes.append(entered_code)
