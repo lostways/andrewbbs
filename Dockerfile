@@ -1,4 +1,4 @@
-FROM python:3.9-alpine as app
+FROM python:3.9 as app
 EXPOSE 8000
 WORKDIR /app
 COPY requirements.txt .
