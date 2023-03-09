@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Screen
 from .models import AccessCode
 from .forms import AccessCodeForm
+from .forms import MemberForm
 
 # Create your views here.
 def index(request):
@@ -72,5 +73,23 @@ def access(request):
         'page_title': "Enter Access Code"
     }
     return render(request, 'access.html', context)
+
+def member_register(request):
+    """Register as a member"""
+
+    if request.method == 'POST':
+        form = MemberForm(data=request.POST)
+        if form.is_valid():
+            member = form.save(commit=False)
+            member.save()
+            return redirect("screen-list")
+    else:
+        form = MemberForm()
+
+    context = {
+        'form':form,
+        'page_title': "Register as a Member"
+    }
+    return render(request, 'members/register.html', context)
 
 

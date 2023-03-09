@@ -1,0 +1,22 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<form class="light-green-box centered-box" method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <fieldset>
+      <legend>New Member</legend>
+      {% for field in form %}
+      <p>
+        <label 
+          {% if field.field.required %}class="required"{% endif %}
+          for="{{ field.id_for_label }}"
+        >
+        {{ field.label }}
+        </label>
+        {{ field }}
+        {{ field.errors }}
+      </p>
+      {% endfor %}
+      <button type="submit" class="btn clear">Register</button>
+    </fieldset>
+{% endblock %}

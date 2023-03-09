@@ -68,3 +68,13 @@ textarea.code-area {
 h3 {
     margin-bottom: 15px;
 }
+
+/* Forms */
+form legend {
+    text-align: center;
+}
+
+label.required::after {
+    content: "<-- Required";
+    color: #000084;
+}

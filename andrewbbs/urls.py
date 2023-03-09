@@ -18,4 +18,9 @@ urlpatterns = [
         views.access,
         name="access",
     ),
+    path(
+        "members/register",
+        views.member_register,
+        name="register"
+    )
 ]
