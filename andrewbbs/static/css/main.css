@@ -23,7 +23,11 @@ body {
 }
 
 .light-green-box {
-    padding: 16px 20.8px;
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    max-width: 24em;
+    padding: 1em;
     font-size: 18px;
     line-height: 20px;
     color: #ffffff;
@@ -77,4 +81,8 @@ form legend {
 label.required::after {
     content: "<-- Required";
     color: #000084;
+}
+
+form .errorlist {
+    color: #aa0000;
 }

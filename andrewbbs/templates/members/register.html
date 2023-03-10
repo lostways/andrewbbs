@@ -1,7 +1,7 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-<form class="light-green-box centered-box" method="post" action="{% url 'register' %}">
+<form class="light-green-box" method="post" action="{% url 'register' %}">
     {% csrf_token %}
     <fieldset>
       <legend>New Member</legend>
@@ -13,8 +13,8 @@
         >
         {{ field.label }}
         </label>
-        {{ field }}
         {{ field.errors }}
+        {{ field }}
       </p>
       {% endfor %}
       <button type="submit" class="btn clear">Register</button>

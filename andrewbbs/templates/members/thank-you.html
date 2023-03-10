@@ -1,0 +1,12 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<div class="light-green-box">
+<p>Thank you for registering.</p>
+<p>Once your membership has been approved, you will receive a text with your personal access code.
+<p>You can use this code to access all the screens you have unlocked and a list of other members.</p>
+<p>You will also be added to the Andrew BBS Signal group</p>
+{{ member }}
+  <a href="{% url 'screen-list' %}" class="btn">Back to Screens</a>
+</div>
+{% endblock %}

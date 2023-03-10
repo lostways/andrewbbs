@@ -81,8 +81,16 @@ def member_register(request):
         form = MemberForm(data=request.POST)
         if form.is_valid():
             member = form.save(commit=False)
+
+            # add codes in session to unclocked_codes
+            member.unlocked_codes = request.session.get('codes', [])
             member.save()
-            return redirect("screen-list")
+
+            context = {
+                'member': member,
+                'page_title': 'Thank You'
+            }
+            return render(request, 'members/thank-you.html', context)
     else:
         form = MemberForm()
 
