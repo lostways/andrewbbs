@@ -11,22 +11,26 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Settings from .env file
+SECRET_KEY = os.getenv('SECRET_KEY')
+DEBUG = os.getenv('DEBUG')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+
+OTP_ACCOUNT_SID = os.getenv('OTP_ACCOUNT_SID')
+OTP_AUTH_TOKEN = os.getenv('OTP_AUTH_TOKEN')
+OTP_SERVICE_ID = os.getenv('OTP_SERVICE_ID')
+OTP_TEMPLATE_ID = os.getenv('OTP_TEMPLATE_ID')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-5#wyd%$4h#6rx!&wt2+00h91yj(%iuk2pc*=0ntu91+nm6xw)e'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 

@@ -44,6 +44,7 @@ PyJWT==2.6.0
 pylint==2.15.2
 pyparsing==3.0.9
 python-dateutil==2.8.2
+python-dotenv==1.0.0
 pytz==2022.7.1
 pyzmq==23.2.1
 requests==2.27.1
