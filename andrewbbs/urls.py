@@ -22,5 +22,10 @@ urlpatterns = [
         "members/register",
         views.member_register,
         name="register"
+    ),
+    path(
+        "members/login",
+        views.member_login,
+        name="login"
     )
 ]

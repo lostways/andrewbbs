@@ -30,3 +30,11 @@ class MemberForm(ModelForm):
          'zip': forms.TextInput(attrs={'placeholder': 'Zip'}),
       }
 
+class LoginForm(forms.Form):
+   handle = forms.CharField(max_length=100, label="Handle")
+   def clean_handle(self):
+      handle = self.cleaned_data.get('handle')
+      member = Member.objects.filter(handle=handle)
+      if not member.exists():
+         raise forms.ValidationError("Handle not found")
+      return handle

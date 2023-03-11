@@ -40,9 +40,11 @@ psutil==5.9.2
 ptyprocess==0.7.0
 pure-eval==0.2.2
 Pygments==2.13.0
+PyJWT==2.6.0
 pylint==2.15.2
 pyparsing==3.0.9
 python-dateutil==2.8.2
+pytz==2022.7.1
 pyzmq==23.2.1
 requests==2.27.1
 Simperium3==0.1.5
@@ -53,6 +55,7 @@ tomli==2.0.1
 tomlkit==0.11.4
 tornado==6.2
 traitlets==5.4.0
+twilio==7.16.5
 typing_extensions==4.5.0
 urllib3==1.26.8
 urwid==2.1.2

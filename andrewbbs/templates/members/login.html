@@ -5,18 +5,8 @@
     {% csrf_token %}
     <fieldset>
       <legend>Login</legend>
-      {% for field in form %}
-      <p>
-        <label 
-          {% if field.field.required %}class="required"{% endif %}
-          for="{{ field.id_for_label }}"
-        >
-        {{ field.label }}
-        </label>
-        {{ field.errors }}
-        {{ field }}
-      </p>
-      {% endfor %}
+      {{form.as_p}}
+      <br />
       <button type="submit" class="btn clear">Login</button>
     </fieldset>
 {% endblock %}

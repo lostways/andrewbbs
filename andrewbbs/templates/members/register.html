@@ -5,6 +5,8 @@
     {% csrf_token %}
     <fieldset>
       <legend>New Member</legend>
+      <p>Membership will allow you to come back any unlocked screens.</p>
+      <p>Your handle and last 4 of your phone number will be visible to other members.</p>
       {% for field in form %}
       <p>
         <label 
