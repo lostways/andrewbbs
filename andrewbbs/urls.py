@@ -31,6 +31,11 @@ urlpatterns = [
     path(
         "members/otp/<int:pk>/<uuid>",
         views.member_otp,
-        name="otp"
+        name="member_otp"
+    ),
+    path(
+        "members/otp/check",
+        views.member_check_otp,
+        name="member_check_otp"
     )
 ]

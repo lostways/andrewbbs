@@ -41,3 +41,4 @@ class LoginForm(forms.Form):
 
 class OTPForm(forms.Form):
    code = forms.CharField(max_length=6, label="Code")
+   phone = forms.CharField(widget=forms.HiddenInput())

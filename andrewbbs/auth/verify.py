@@ -2,7 +2,7 @@ from django.conf import settings
 from twilio.rest import Client
 
 class OTP:
-  def send_code(self, receiver):
+  def send_code(receiver):
     account_sid = settings.OTP_ACCOUNT_SID
     auth_token = settings.OTP_AUTH_TOKEN
     service_id = settings.OTP_SERVICE_ID
@@ -15,7 +15,7 @@ class OTP:
     
     return verification.status
 
-  def verify_code(self, receiver, code):
+  def verify_code(receiver, code):
     account_sid = settings.OTP_ACCOUNT_SID
     auth_token = settings.OTP_AUTH_TOKEN
     service_id = settings.OTP_SERVICE_ID

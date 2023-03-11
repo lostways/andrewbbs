@@ -1,7 +1,7 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-<form class="light-green-box" method="post" action="{% url 'check_otp' %}">
+<form class="light-green-box" method="post" action="{% url 'member_check_otp' %}">
     {% csrf_token %}
     <fieldset>
       <legend>Auth Code</legend>
