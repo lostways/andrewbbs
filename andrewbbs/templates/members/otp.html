@@ -1,0 +1,12 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<form class="light-green-box" method="post" action="{% url 'check_otp' %}">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Auth Code</legend>
+      {{form.as_p}}
+      <br />
+      <button type="submit" class="btn clear">Submit</button>
+    </fieldset>
+{% endblock %}

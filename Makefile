@@ -8,10 +8,10 @@ build:
 	docker-compose build
 run:
 	@echo "==> Running Andrew BBS"
-	docker-compose up -d
+	docker-compose up
 stop:
 	@echo "==> Stopping Andrew BBS"
-	docker-compose stop
+	docker-compose down
 shell:
 	@echo "==> Executing shell in Andrew BBS"
 	docker-compose exec app bash

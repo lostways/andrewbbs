@@ -27,5 +27,10 @@ urlpatterns = [
         "members/login",
         views.member_login,
         name="login"
+    ),
+    path(
+        "members/otp/<int:pk>/<uuid>",
+        views.member_otp,
+        name="otp"
     )
 ]

@@ -1,3 +1,4 @@
+import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .models import Screen
@@ -6,6 +7,8 @@ from .models import Member
 from .forms import AccessCodeForm
 from .forms import MemberForm
 from .forms import LoginForm
+from .forms import OTPForm
+from .auth.verify import OTP
 
 # Create your views here.
 def index(request):
@@ -112,6 +115,9 @@ def member_login(request):
             handle = form.cleaned_data.get('handle')
             try:
                 member = Member.objects.get(handle=handle)
+                OTP.send_code(member.get('phone'))
+                temp = uuid.uuid4()
+                return redirect("/members/otp/{}/{}".format(member.pk,temp))
             except Member.DoesNotExist:
                 messages.error(request, "Handle not found")
 
@@ -129,3 +135,11 @@ def member_login(request):
     }
     return render(request, 'members/login.html', context)
 
+def member_otp(request):
+    """Request OTP"""
+    form = OTPForm()
+    context = {
+        'form':form,
+        'page_title': "Enter Authentication Code"
+    }
+    return render(request, 'members/otp.html', context)

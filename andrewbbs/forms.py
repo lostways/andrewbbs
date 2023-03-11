@@ -38,3 +38,6 @@ class LoginForm(forms.Form):
       if not member.exists():
          raise forms.ValidationError("Handle not found")
       return handle
+
+class OTPForm(forms.Form):
+   code = forms.CharField(max_length=6, label="Code")

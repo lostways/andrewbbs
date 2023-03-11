@@ -21,8 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Settings from .env file
 SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG')
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')
+DEBUG = os.getenv('DEBUG').lower() == 'true'
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS','').split(',')
 
 OTP_ACCOUNT_SID = os.getenv('OTP_ACCOUNT_SID')
 OTP_AUTH_TOKEN = os.getenv('OTP_AUTH_TOKEN')
@@ -31,6 +31,8 @@ OTP_TEMPLATE_ID = os.getenv('OTP_TEMPLATE_ID')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
+
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 
