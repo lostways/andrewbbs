@@ -1,6 +1,7 @@
 import re
 from django import forms
 from django.forms import ModelForm
+from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
 from .models import Member
 
@@ -8,9 +9,6 @@ class AccessCodeForm(forms.Form):
    code = forms.CharField(max_length=100, label="") 
 
 class MemberForm(ModelForm):
-   def clean_phone(self):
-      data = self.cleaned_data['phone']
-      return re.sub(r'\D', '', data)
 
    class Meta:
       model = Member
@@ -24,7 +22,7 @@ class MemberForm(ModelForm):
       }
       widgets = {
          'handle': forms.TextInput(attrs={'placeholder': 'Handle'}),
-         'phone': forms.TextInput(attrs={'placeholder': 'Phone'}),
+         'phone': PhoneNumberPrefixWidget(country_choices=[("US","+1")],attrs={'placeholder': 'Mobile #'}),
          'first_name': forms.TextInput(attrs={'placeholder': 'First Name'}),
          'last_name': forms.TextInput(attrs={'placeholder': 'Last Name'}),
          'zip': forms.TextInput(attrs={'placeholder': 'Zip'}),

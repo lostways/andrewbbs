@@ -86,3 +86,7 @@ label.required::after {
 form .errorlist {
     color: #aa0000;
 }
+
+form.member-register select {
+   width: 50px; 
+}

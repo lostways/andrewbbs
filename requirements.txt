@@ -2,6 +2,7 @@ argcomplete==2.0.0
 asgiref==3.6.0
 astroid==2.12.9
 asttokens==2.0.8
+Babel==2.12.1
 backcall==0.2.0
 black==22.8.0
 certifi==2021.10.8
@@ -11,6 +12,7 @@ debugpy==1.6.3
 decorator==5.1.1
 dill==0.3.5.1
 Django==4.1.7
+django-phonenumber-field==7.0.2
 entrypoints==0.4
 executing==1.0.0
 idna==3.3
@@ -31,6 +33,7 @@ packaging==21.3
 parso==0.8.3
 pathspec==0.10.1
 pexpect==4.8.0
+phonenumbers==8.13.7
 pickleshare==0.7.5
 Pillow==9.4.0
 pipx==1.0.0

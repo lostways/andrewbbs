@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import RegexValidator
+from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
@@ -43,8 +43,7 @@ class Screen(models.Model):
 
 class Member(models.Model):
     handle = models.CharField(max_length=100, unique=True)
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Please enter a valid phone number.")
-    phone = models.CharField(validators=[phone_regex], max_length=17, unique=True)
+    phone = PhoneNumberField(blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     zip = models.CharField(max_length=100, blank=True)
