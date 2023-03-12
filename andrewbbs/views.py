@@ -117,7 +117,7 @@ def member_login(request):
                 member = Member.objects.get(handle=handle)
                 OTP.send_code(member.phone)
                 temp = uuid.uuid4()
-                return redirect("/members/otp/{}/{}".format(member.pk,temp))
+                return redirect("/members/otp/{}".format(member.pk,temp))
             except Member.DoesNotExist:
                 messages.error(request, "Handle not found")
 
@@ -135,35 +135,30 @@ def member_login(request):
     }
     return render(request, 'members/login.html', context)
 
-def member_otp(request, pk, uuid):
+def member_otp(request, pk):
     """Request OTP"""
-    form = OTPForm()
-    member_phone = Member.objects.get(pk=pk).phone
-    form.fields['phone'].initial = member_phone
-    context = {
-        'form':form,
-        'page_title': "Enter Authentication Code"
-    }
-    return render(request, 'members/otp.html', context)
-
-def member_check_otp(request):
-    """Check OTP"""
+    valid = ""
     if request.method == 'POST':
         form = OTPForm(data=request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            phone = form.cleaned_data.get('phone')
-            if OTP.verify_code(phone, code):
-                request.session['member'] = member.pk
-                return redirect("screen-list")
-            else:
-                messages.error(request, "Invalid code")
-    else:
-        form = OTPForm()
-        messages.error(request, "Invalid code")
+        try:
+            if form.is_valid():
+                code = form.cleaned_data.get('code')
+                phone = Member.objects.get(pk=pk).phone
+                if OTP.verify_code(phone, code):
+                    valid = "True"
+                    #return redirect("screen-list")
+                else:
+                    valid = "False"
+                    #messages.error(request, "Invalid code")
+        except:
+            valid = "False"
+            #messages.error(request, "Invalid code")
 
+    form = OTPForm()
     context = {
         'form':form,
+        'valid': valid,
+        'pk': pk,
         'page_title': "Enter Authentication Code"
-    } 
+    }
     return render(request, 'members/otp.html', context)
