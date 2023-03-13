@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User, AbstractBaseUser
+from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -49,7 +49,6 @@ class Member(AbstractBaseUser):
     zip = models.CharField(max_length=100, blank=True)
     unlocked_codes = models.JSONField(blank=True, null=True)
     
-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

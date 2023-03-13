@@ -88,8 +88,13 @@ def member_register(request):
         if form.is_valid():
             member = form.save(commit=False)
 
+            # set unsable password
+            member.set_unusable_password()
+
             # add codes in session to unclocked_codes
             member.unlocked_codes = request.session.get('codes', [])
+            
+            # save member
             member.save()
 
             context = {
