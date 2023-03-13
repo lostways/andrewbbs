@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractBaseUser
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -41,7 +41,7 @@ class Screen(models.Model):
     def __str__(self):
         return self.title
 
-class Member(models.Model):
+class Member(AbstractBaseUser):
     handle = models.CharField(max_length=100, unique=True)
     phone = PhoneNumberField(blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=100, blank=True)
@@ -52,6 +52,9 @@ class Member(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    USERNAME_FIELD = 'handle'
+    REQUIRED_FIELDS = ['phone']
 
     class Meta:
         ordering = ['handle']

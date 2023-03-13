@@ -1,12 +1,13 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-<form class="light-green-box" method="post" action="{% url 'login' %}">
+<form class="light-green-box member-login" method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <fieldset>
       <legend>Login</legend>
       {{form.as_p}}
       <br />
-      <button type="submit" class="btn clear">Login</button>
+      <input type="submit" class="btn clear" value="< Login >" />
     </fieldset>
+</form>
 {% endblock %}

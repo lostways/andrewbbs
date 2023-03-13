@@ -24,6 +24,11 @@
                   <li>
                       <a href="/">ANDREW BBS</a>
                   </li>
+                  {% if request.user.is_authenticated %}
+                  <li>
+                      <a href="/">{{request.user.handle}}</a>
+                  </li>
+                  {% endif %}
               </ul>
           </div>
         </div>

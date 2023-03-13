@@ -88,5 +88,9 @@ form .errorlist {
 }
 
 form.member-register select {
-   width: 50px; 
+    width: 50px; 
+}
+
+form.member-login {
+    max-width: 15rem; 
 }

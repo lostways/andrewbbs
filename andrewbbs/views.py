@@ -1,6 +1,6 @@
-import uuid
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
 from .models import Screen
 from .models import AccessCode
 from .models import Member
@@ -96,7 +96,7 @@ def member_register(request):
                 'member': member,
                 'page_title': 'Thank You'
             }
-            return render(request, 'members/thank-you.html', context)
+            return render(request, 'members/login.html', context)
     else:
         form = MemberForm()
 
@@ -115,9 +115,8 @@ def member_login(request):
             handle = form.cleaned_data.get('handle')
             try:
                 member = Member.objects.get(handle=handle)
-                OTP.send_code(member.phone)
-                temp = uuid.uuid4()
-                return redirect("/members/otp/{}".format(member.pk,temp))
+                OTP.send_code(member.phone.as_e164)
+                return redirect("/members/otp/{}".format(member.pk))
             except Member.DoesNotExist:
                 messages.error(request, "Handle not found")
 
@@ -140,19 +139,19 @@ def member_otp(request, pk):
     valid = ""
     if request.method == 'POST':
         form = OTPForm(data=request.POST)
-        try:
-            if form.is_valid():
-                code = form.cleaned_data.get('code')
-                phone = Member.objects.get(pk=pk).phone
-                if OTP.verify_code(phone, code):
-                    valid = "True"
-                    #return redirect("screen-list")
-                else:
-                    valid = "False"
-                    #messages.error(request, "Invalid code")
-        except:
-            valid = "False"
-            #messages.error(request, "Invalid code")
+        if form.is_valid():
+            code = form.cleaned_data.get('code')
+            member = Member.objects.get(pk=pk)
+            otp_status = OTP.verify_code(member.phone.as_e164, code)
+            if otp_status == "approved":
+                valid = "True"
+                user = authenticate(request, handle=member.handle)
+                if user is not None:
+                    login(request, member, backend='andrewbbs.auth.member_backend.MemberBackend')
+                    return redirect("/")
+            else:
+                valid = otp_status
+                #messages.error(request, "Invalid code")
 
     form = OTPForm()
     context = {
