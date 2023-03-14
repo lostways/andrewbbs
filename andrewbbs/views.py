@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from .models import Screen
 from .models import AccessCode
 from .models import Member
@@ -9,6 +9,8 @@ from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
 from .auth.verify import OTP
+
+User = get_user_model()
 
 # Create your views here.
 def index(request):
@@ -83,27 +85,25 @@ def access(request):
 def member_register(request):
     """Register as a member"""
 
-    if request.method == 'POST':
-        form = MemberForm(data=request.POST)
-        if form.is_valid():
-            member = form.save(commit=False)
+    form = MemberForm(request.POST or None)
 
-            # set unsable password
-            member.set_unusable_password()
+    if form.is_valid():
+        member = form.save(commit=False)
 
-            # add codes in session to unclocked_codes
-            member.unlocked_codes = request.session.get('codes', [])
-            
-            # save member
-            member.save()
+        # set unsable password
+        member.set_unusable_password()
 
-            context = {
-                'member': member,
-                'page_title': 'Thank You'
-            }
-            return render(request, 'members/login.html', context)
-    else:
-        form = MemberForm()
+        # add codes in session to unclocked_codes
+        member.unlocked_codes = request.session.get('codes', [])
+        
+        # save member
+        member.save()
+
+        context = {
+            'member': member,
+            'page_title': 'Login as a Member'
+        }
+        return render(request, 'members/login.html', context)
 
     context = {
         'form':form,
@@ -114,24 +114,15 @@ def member_register(request):
 def member_login(request):
     """Login as a member"""
 
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            handle = form.cleaned_data.get('handle')
-            try:
-                member = Member.objects.get(handle=handle)
-                OTP.send_code(member.phone.as_e164)
-                return redirect("/members/otp/{}".format(member.pk))
-            except Member.DoesNotExist:
-                messages.error(request, "Handle not found")
-
-            context = {
-                'member': member,
-                'page_title': 'Thank You'
-            }
-            return redirect("screen-list")
-    else:
-        form = LoginForm()
+    form = LoginForm(request.POST or None)
+    if form.is_valid():
+        handle = form.cleaned_data.get('handle')
+        try:
+            member = Member.objects.get(handle=handle)
+            OTP.send_code(member.phone.as_e164)
+            return redirect("/members/otp/{}".format(member.pk))
+        except Member.DoesNotExist:
+            messages.error(request, "Handle not found")
 
     context = {
         'form':form,
@@ -141,28 +132,31 @@ def member_login(request):
 
 def member_otp(request, pk):
     """Request OTP"""
-    valid = ""
-    if request.method == 'POST':
-        form = OTPForm(data=request.POST)
-        if form.is_valid():
-            code = form.cleaned_data.get('code')
-            member = Member.objects.get(pk=pk)
-            otp_status = OTP.verify_code(member.phone.as_e164, code)
-            if otp_status == "approved":
-                valid = "True"
-                user = authenticate(request, handle=member.handle)
-                if user is not None:
-                    login(request, member, backend='andrewbbs.auth.member_backend.MemberBackend')
-                    return redirect("/")
-            else:
-                valid = otp_status
-                #messages.error(request, "Invalid code")
 
-    form = OTPForm()
+    valid = ""
+
+    form = OTPForm(request.POST or None)
+    if form.is_valid():
+        code = form.cleaned_data.get('code')
+        member = Member.objects.get(pk=pk)
+        otp_status = OTP.verify_code(member.phone.as_e164, code)
+        if otp_status == "approved":
+            valid = "True"
+            user = authenticate(request, handle=member.handle)
+            if user is not None:
+                login(request, user, backend='andrewbbs.auth.member_backend.MemberBackend')
+                return redirect("/")
+            else:
+                messages.error(request, "Invalid code")
+        else:
+            valid = otp_status
+            #messages.error(request, "Invalid code")
+
     context = {
         'form':form,
         'valid': valid,
         'pk': pk,
         'page_title': "Enter Authentication Code"
     }
+
     return render(request, 'members/otp.html', context)

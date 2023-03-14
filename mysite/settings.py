@@ -114,6 +114,7 @@ AUTHENTICATION_BACKENDS = (
     'andrewbbs.auth.member_backend.MemberBackend',
 )
 
+AUTH_USER_MODEL = 'andrewbbs.Member'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/

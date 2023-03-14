@@ -1,17 +1,17 @@
 import re
 from django import forms
 from django.forms import ModelForm
+from django.contrib.auth import get_user_model
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 
-from .models import Member
-
+User = get_user_model()
 class AccessCodeForm(forms.Form):
    code = forms.CharField(max_length=100, label="") 
 
 class MemberForm(ModelForm):
 
    class Meta:
-      model = Member
+      model = User
       fields = ['handle', 'phone', 'first_name', 'last_name', 'zip']
       labels = {
          'handle': 'Handle',
@@ -32,7 +32,7 @@ class LoginForm(forms.Form):
    handle = forms.CharField(max_length=100, label="Handle")
    def clean_handle(self):
       handle = self.cleaned_data.get('handle')
-      member = Member.objects.filter(handle=handle)
+      member = User.objects.filter(handle=handle)
       if not member.exists():
          raise forms.ValidationError("Handle not found")
       return handle

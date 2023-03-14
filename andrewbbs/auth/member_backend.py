@@ -1,18 +1,20 @@
 from django.contrib.auth.backends import ModelBackend
-from ..models import Member
+from django.contrib.auth import get_user_model
 
 class MemberBackend(ModelBackend):
   """Authenticate against the Member model."""
 
   def authenticate(self, request, handle):
+    User = get_user_model()
     try:
-      member = Member.objects.get(handle=handle)
-      return member
-    except Member.DoesNotExist:
+      user = User.objects.get(handle=handle)
+      return user
+    except User.DoesNotExist:
       return None
   
   def get_user(self, user_id):
+    User = get_user_model()
     try:
-      return Member.objects.get(pk=user_id)
-    except Member.DoesNotExist:
+      return User.objects.get(pk=user_id)
+    except User.DoesNotExist:
       return None
