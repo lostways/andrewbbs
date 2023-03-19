@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from .models import Screen
@@ -16,14 +17,8 @@ User = get_user_model()
 def index(request):
     """Screen List"""
 
-    codes = None
-
-    # get unlocked codes
-    if request.user.is_authenticated:
-        member = Member.objects.get(handle=request.user.handle)
-        codes = member.unlocked_codes
-    elif 'codes' in request.session:
-        codes = request.session['codes'] 
+    # Unlocked codes set by AccessCodeMiddleware
+    codes = request.unlocked_codes
     
     if codes:
         screens = Screen.objects.filter(
@@ -48,9 +43,15 @@ def index(request):
 def detail(request, slug):
     """Screen Detail"""
 
-    codes = request.session.get('codes', [])
-    screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
-    screen = get_object_or_404(screen)
+    # Unlocked codes set by AccessCodeMiddleware
+    codes = request.unlocked_codes
+
+    if codes:
+        screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
+        screen = get_object_or_404(screen)
+    else:
+        # if no codes return 404
+        raise Http404("No codes unlocked")
 
     context = {
         'screen': screen,

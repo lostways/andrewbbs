@@ -1,0 +1,180 @@
+# Tests for the views in the andrewbbs app
+from django.test import TestCase
+from django.urls import reverse
+from django.contrib.auth import get_user_model
+from ..models import AccessCode
+from ..models import Screen
+from ..models import Member
+from ..forms import AccessCodeForm
+
+User = get_user_model()
+
+class ScreenTestCase(TestCase):
+      
+    def setUp(self):
+      self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
+      self.access_code_345 = AccessCode.objects.create(code="testCaseCode345")
+      self.access_code_679 = AccessCode.objects.create(code="testCaseCode678")
+  
+      test_user = User.objects.create_user(
+          handle="testuser",
+          phone="+1234567890",
+          password="testpassword"
+      )
+  
+      self.screen_1 = Screen.objects.create(
+          title="Test1",
+          body="Test One Body",
+          slug="test-1",
+          published=True,
+          author = test_user
+      )
+  
+      self.screen_2 = Screen.objects.create(
+          title="Test2",
+          body="Test Two Body",
+          slug="test-2",
+          published=True,
+          author = test_user
+      )
+  
+      self.screen_3 = Screen.objects.create(
+          title="Test3",
+          body="Test Three Body",
+          slug="test-3",
+          published=True,
+          author = test_user
+      )
+  
+      self.screen_1.codes.add(self.access_code_123)
+      self.screen_1.codes.add(self.access_code_345)
+      self.screen_2.codes.add(self.access_code_345)
+      self.screen_2.codes.add(self.access_code_679)
+      self.screen_3.codes.add(self.access_code_123)
+      self.screen_3.codes.add(self.access_code_679)
+  
+    def test_screen_list_no_codes(self):
+      """Test that screen list view returns access code view if no codes are unlocked"""
+      response = self.client.get(reverse('screen-list'))
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'access.html')
+    
+    def test_screen_list_unlocked_session(self):
+      """Test that screen list view returns screen list if codes in session"""
+      session = self.client.session
+      session['codes'] = ["testCaseCode123"]
+      session.save()
+
+      screens = Screen.objects.filter(
+          codes__code__in=["testCaseCode123"],
+        ).distinct().order_by("-updated_at")
+
+      response = self.client.get(reverse('screen-list'))
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'screens/screen_list.html')
+      self.assertQuerysetEqual(response.context['screen_list'], screens)
+
+    def test_screen_list_unlocked_user(self):
+      """Test that screen list view returns screen list if codes in user"""
+      
+      test_user = User.objects.create_user(
+        handle="testuser2",
+        phone="+1234567892",
+        password="testpassword",
+        unlocked_codes=["testCaseCode123"]
+      )
+
+      screens = Screen.objects.filter(
+          codes__code__in=["testCaseCode123"],
+        ).distinct().order_by("-updated_at")
+
+      self.client.force_login(test_user)
+
+      response = self.client.get(reverse('screen-list'))
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'screens/screen_list.html')
+      self.assertQuerysetEqual(response.context['screen_list'], screens)
+  
+    def test_screen_detail_locked(self):
+      response = self.client.get(reverse('screen-detail', kwargs={'slug': self.screen_1.slug}))
+      self.assertEqual(response.status_code, 404)
+    
+    def test_screen_detail_unlocked_session(self):
+      session = self.client.session
+      session['codes'] = ["testCaseCode123"]
+      session.save()
+      response = self.client.get(reverse('screen-detail', kwargs={'slug': self.screen_1.slug}))
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'screens/screen_detail.html')
+      self.assertEqual(response.context['screen'], self.screen_1)
+      
+    def test_screen_detail_unlocked_user(self):
+      test_user = User.objects.create_user(
+        handle="testuser2",
+        phone="+1234567892",
+        password="testpassword",
+        unlocked_codes=["testCaseCode123"]
+      )
+      self.client.force_login(test_user)
+      response = self.client.get(reverse('screen-detail', kwargs={'slug': self.screen_1.slug}))
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'screens/screen_detail.html')
+      self.assertEqual(response.context['screen'], self.screen_1)
+
+class AccessTestCase(TestCase):  
+
+  def SetUp(self):
+    self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
+    self.access_code_345 = AccessCode.objects.create(code="testCaseCode345")
+    self.access_code_679 = AccessCode.objects.create(code="testCaseCode678")
+
+    test_user = User.objects.create_user(
+        handle="testuser",
+        phone="+1234567890",
+        password="testpassword"
+    )
+
+    self.screen_1 = Screen.objects.create(
+        title="Test1",
+        body="Test One Body",
+        slug="test-1",
+        published=True,
+        author = test_user
+    )
+
+    self.screen_2 = Screen.objects.create(
+        title="Test2",
+        body="Test Two Body",
+        slug="test-2",
+        published=True,
+        author = test_user
+    )
+
+    self.screen_3 = Screen.objects.create(
+        title="Test3",
+        body="Test Three Body",
+        slug="test-3",
+        published=True,
+        author = test_user
+    )
+
+    self.screen_1.codes.add(self.access_code_123)
+    self.screen_1.codes.add(self.access_code_345)
+    self.screen_2.codes.add(self.access_code_345)
+    self.screen_2.codes.add(self.access_code_679)
+    self.screen_3.codes.add(self.access_code_123)
+    self.screen_3.codes.add(self.access_code_679)
+
+  def test_access_code_view(self):
+    response = self.client.get("/")
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, 'access.html')
+    self.assertContains(response, 'Enter Access Code')
+    self.assertContains(response, 'Submit')
+
+  def test_access_code_valid(self):
+    response = self.client.post("/", {'code': 'testCaseCode123'})
+    self.assertEqual(response.status_code, 302)
+    self.assertRedirects(response, reverse('screen-list'))
+    self.assertEqual(self.client.session['codes'], ['testCaseCode123'])
+    self.assertEqual(self.client.request.unlocked_codes, ['testCaseCode123'])  

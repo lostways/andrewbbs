@@ -18,6 +18,9 @@ shell:
 migrate:
 	@echo "==> Migrating Andrew BBS"
 	docker-compose exec app python manage.py migrate
+test:
+	@echo "==> Test Andrew BBS"
+	docker-compose exec app python manage.py test -v 2
 manage:
 	@echo "==> Executing manage.py $(c) in Andrew BBS"
 	docker-compose exec app python manage.py $(filter-out $@,$(MAKECMDGOALS))
