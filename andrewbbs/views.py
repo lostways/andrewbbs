@@ -14,8 +14,18 @@ User = get_user_model()
 
 # Create your views here.
 def index(request):
-    if 'codes' in request.session:
+    """Screen List"""
+
+    codes = None
+
+    # get unlocked codes
+    if request.user.is_authenticated:
+        member = Member.objects.get(handle=request.user.handle)
+        codes = member.unlocked_codes
+    elif 'codes' in request.session:
         codes = request.session['codes'] 
+    
+    if codes:
         screens = Screen.objects.filter(
             codes__code__in=codes,
         ).distinct().order_by("-updated_at")
@@ -36,6 +46,8 @@ def index(request):
     return access(request)
 
 def detail(request, slug):
+    """Screen Detail"""
+
     codes = request.session.get('codes', [])
     screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
     screen = get_object_or_404(screen)
@@ -54,27 +66,32 @@ def access(request):
 
     msg = repr(codes) + repr(screens)
 
-    if request.method == 'POST':
-        form = AccessCodeForm(data=request.POST)
-        if form.is_valid():
-            entered_code = form.cleaned_data['code']
+    form = AccessCodeForm(request.POST or None)
 
-            try:
-                valid_code = AccessCode.objects.get(
-                    code=entered_code,
-                    enabled=True
-                )
-            except AccessCode.DoesNotExist:
-                valid_code = None
+    if form.is_valid():
+        entered_code = form.cleaned_data['code']
 
-            if valid_code:
-                codes.append(entered_code)
-                request.session['codes'] = list(set(codes))
+        try:
+            valid_code = AccessCode.objects.get(
+                code=entered_code,
+                enabled=True
+            )
+        except AccessCode.DoesNotExist:
+            valid_code = None
 
-                if valid_code.has_screens():
-                    return redirect("screen-list")
+        if valid_code:
+            codes.append(entered_code)
+            request.session['codes'] = list(set(codes))
 
-    form = AccessCodeForm()
+            #if user is logged in, add code to unlocked_codes
+            if request.user.is_authenticated:
+                member = Member.objects.get(handle=request.user.handle)
+                member.unlocked_codes = codes
+                member.save()
+
+            if valid_code.has_screens():
+                return redirect("screen-list")
+
     context = {
         'form':form,
         'msg': msg,
@@ -115,6 +132,7 @@ def member_login(request):
     """Login as a member"""
 
     form = LoginForm(request.POST or None)
+
     if form.is_valid():
         handle = form.cleaned_data.get('handle')
         try:
@@ -145,8 +163,6 @@ def member_otp(request, pk):
             user = authenticate(request, handle=member.handle)
             if user is not None:
                 login(request, user, backend='andrewbbs.auth.member_backend.MemberBackend')
-                # set codes in session to unlocked_codes
-                request.session['codes'] = member.unlocked_codes
                 return redirect("/")
             else:
                 messages.error(request, "Invalid code")
@@ -164,4 +180,7 @@ def member_otp(request, pk):
     return render(request, 'members/otp.html', context)
 
 def member_logout(request):
-    return logout(request)
+    """Logout Member"""
+
+    logout(request)
+    return redirect("/")
