@@ -21,16 +21,21 @@ urlpatterns = [
     path(
         "members/register",
         views.member_register,
-        name="register"
+        name="member-register"
     ),
     path(
         "members/login",
         views.member_login,
-        name="login"
+        name="member-login"
     ),
     path(
         "members/otp/<int:pk>",
         views.member_otp,
-        name="member_otp"
+        name="member-otp"
+    ),
+    path(
+        "members/logout",
+        views.member_logout,
+        name="member-logout"
     ),
 ]

@@ -103,7 +103,7 @@ def member_register(request):
             'member': member,
             'page_title': 'Login as a Member'
         }
-        return render(request, 'members/login.html', context)
+        return redirect('member-login')
 
     context = {
         'form':form,
@@ -145,6 +145,8 @@ def member_otp(request, pk):
             user = authenticate(request, handle=member.handle)
             if user is not None:
                 login(request, user, backend='andrewbbs.auth.member_backend.MemberBackend')
+                # set codes in session to unlocked_codes
+                request.session['codes'] = member.unlocked_codes
                 return redirect("/")
             else:
                 messages.error(request, "Invalid code")
@@ -160,3 +162,6 @@ def member_otp(request, pk):
     }
 
     return render(request, 'members/otp.html', context)
+
+def member_logout(request):
+    return logout(request)

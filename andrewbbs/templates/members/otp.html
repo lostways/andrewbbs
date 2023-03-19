@@ -1,11 +1,11 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-<form class="light-green-box" method="post" action="{% url 'member_otp' pk %}">
+<form class="light-green-box" method="post" action="{% url 'member-otp' pk %}">
     {% csrf_token %}
     <fieldset>
       <legend>Auth Code</legend>
-      <p>{{valid}}</p>
+      <p>We sent a code your phone. Enter it to login</p>
       {{form.as_p}}
       <br />
       <input type="submit" class="btn clear" value="< Submit >" />
