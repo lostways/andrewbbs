@@ -105,6 +105,10 @@ def access(request):
 def member_register(request):
     """Register as a member"""
 
+    # if user is logged in or no codes are unlocked redirect to index
+    if request.user.is_authenticated or request.unlocked_codes == []:
+        return redirect("screen-list")
+
     form = MemberForm(request.POST or None)
 
     if form.is_valid():

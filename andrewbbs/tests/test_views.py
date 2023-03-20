@@ -1,4 +1,5 @@
 # Tests for the views in the andrewbbs app
+from unittest import mock
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -6,6 +7,8 @@ from django.forms.models import model_to_dict
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
+from ..auth.verify import OTP
+
 
 User = get_user_model()
 
@@ -211,8 +214,17 @@ class MemberTestCase(TestCase):
       phone="+12345678901",
       password="testpassword"
     )
-  
-  def test_member_register_view(self):
+
+  def test_member_register_view_no_codes(self): 
+    response = self.client.get(reverse('member-register'))
+    self.assertEqual(response.status_code, 302)
+    self.assertRedirects(response, reverse('screen-list'))
+
+  def test_member_register_view_unlocked_codes(self):
+    session = self.client.session
+    session['codes'] = ["testCaseCode123"]
+    session.save()
+
     response = self.client.get(reverse('member-register'))
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, 'members/register.html')
@@ -229,6 +241,11 @@ class MemberTestCase(TestCase):
       'zip': '12345',
     }
 
+    # Put codes in the session
+    session = self.client.session
+    session['codes'] = ["testCaseCode123", "testCaseCode345"]
+    session.save()
+
     response = self.client.post(reverse('member-register'), data)
     #print(response.content)
     self.assertEqual(response.status_code, 302)
@@ -242,7 +259,7 @@ class MemberTestCase(TestCase):
     self.assertEqual(new_member.last_name, 'User')
     self.assertEqual(new_member.zip, '12345')
     self.assertEqual(new_member.is_staff, False)
-    self.assertEqual(new_member.unlocked_codes, [])
+    self.assertEqual(new_member.unlocked_codes, ["testCaseCode123", "testCaseCode345"])
   
   def test_member_register_valid_with_codes(self):
     data = {
@@ -266,6 +283,36 @@ class MemberTestCase(TestCase):
     self.assertEqual(Member.objects.count(), 2)
 
     new_member = Member.objects.get(handle='testuser2')
-
     self.assertEqual(new_member.unlocked_codes, ['testCaseCode123', 'testCaseCode345'])
+
+  def test_member_register_invalid(self):
+    data = {
+      'handle': 'testuser',
+      'phone_0': 'US', # Phone number field is split into two fields
+      'phone_1': '2345678920',
+      'first_name': 'Test',
+      'last_name': 'User',
+      'zip': '12345',
+    }
+
+    session = self.client.session
+    session['codes'] = ["testCaseCode123", "testCaseCode345"]
+    session.save()
+
+    response = self.client.post(reverse('member-register'), data)
+    #print(response.content)
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, 'members/register.html')
+    self.assertEqual(Member.objects.count(), 1)
+    self.assertContains(response, 'Member with this Handle already exists.')
   
+  def test_member_login_view(self):
+    response = self.client.get(reverse('member-login'))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, 'members/login.html')
+    self.assertContains(response, 'Login')
+  
+  def test_member_login_valid(self):
+    data = {
+      'handle': 'testuser',
+    }
