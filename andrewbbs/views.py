@@ -79,7 +79,10 @@ def access(request):
             valid_code = None
 
         if valid_code:
-            codes.append(entered_code)
+            # add code if not already in codes
+            if entered_code not in codes:
+                codes.append(entered_code)
+
             #print (f"code: {entered_code} is valid")
 
             #if user is logged in, add code to unlocked_codes

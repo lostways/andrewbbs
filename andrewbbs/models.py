@@ -94,7 +94,7 @@ class Member(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     zip = models.CharField(max_length=100, blank=True)
-    unlocked_codes = models.JSONField(blank=True, null=True)
+    unlocked_codes = models.JSONField(blank=True, null=True, default=list)
     
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
