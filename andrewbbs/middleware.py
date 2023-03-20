@@ -10,7 +10,7 @@ class AccessCodeMiddleware:
     # the view (and later middleware) are called.
 
     # get unlocked codes
-    codes = None
+    codes = []
     if request.user.is_authenticated:
       member = Member.objects.get(handle=request.user.handle)
       codes = member.unlocked_codes

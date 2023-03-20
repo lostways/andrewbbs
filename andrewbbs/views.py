@@ -62,10 +62,8 @@ def detail(request, slug):
 def access(request):
     """Enter Access Code"""
 
-    codes = request.session.get('codes', [])
-    screens = request.session.get('screens', [])
-
-    msg = repr(codes) + repr(screens)
+    # Unlocked codes set by AccessCodeMiddleware
+    codes = request.unlocked_codes
 
     form = AccessCodeForm(request.POST or None)
 
@@ -82,20 +80,21 @@ def access(request):
 
         if valid_code:
             codes.append(entered_code)
-            request.session['codes'] = list(set(codes))
+            #print (f"code: {entered_code} is valid")
 
             #if user is logged in, add code to unlocked_codes
             if request.user.is_authenticated:
                 member = Member.objects.get(handle=request.user.handle)
                 member.unlocked_codes = codes
                 member.save()
+            else:
+                request.session['codes'] = codes
 
             if valid_code.has_screens():
                 return redirect("screen-list")
 
     context = {
         'form':form,
-        'msg': msg,
         'page_title': "Enter Access Code"
     }
     return render(request, 'access.html', context)

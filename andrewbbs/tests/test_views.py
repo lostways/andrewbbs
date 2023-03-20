@@ -2,10 +2,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.forms.models import model_to_dict
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
-from ..forms import AccessCodeForm
 
 User = get_user_model()
 
@@ -122,8 +122,8 @@ class ScreenTestCase(TestCase):
       self.assertEqual(response.context['screen'], self.screen_1)
 
 class AccessTestCase(TestCase):  
-
-  def SetUp(self):
+  
+  def setUp(self):
     self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
     self.access_code_345 = AccessCode.objects.create(code="testCaseCode345")
     self.access_code_679 = AccessCode.objects.create(code="testCaseCode678")
@@ -166,15 +166,18 @@ class AccessTestCase(TestCase):
     self.screen_3.codes.add(self.access_code_679)
 
   def test_access_code_view(self):
-    response = self.client.get("/")
+    response = self.client.get('/')
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, 'access.html')
     self.assertContains(response, 'Enter Access Code')
     self.assertContains(response, 'Submit')
 
   def test_access_code_valid(self):
-    response = self.client.post("/", {'code': 'testCaseCode123'})
+    response = self.client.post('/', data={'code': 'testCaseCode123'})
+    
+    # Assert that the user is redirected to the screen list
     self.assertEqual(response.status_code, 302)
     self.assertRedirects(response, reverse('screen-list'))
+
+    # Assert that the code is in the session now
     self.assertEqual(self.client.session['codes'], ['testCaseCode123'])
-    self.assertEqual(self.client.request.unlocked_codes, ['testCaseCode123'])  
