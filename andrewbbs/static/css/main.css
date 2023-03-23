@@ -98,7 +98,11 @@ label.required::after {
 }
 
 form .errorlist {
-    color: #aa0000;
+    color: #fe54fe
+}
+
+form ul.messages {
+    color: #fe54fe;
 }
 
 form.member-register select {

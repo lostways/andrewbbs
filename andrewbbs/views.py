@@ -78,7 +78,7 @@ def access(request):
         except AccessCode.DoesNotExist:
             valid_code = None
 
-        if valid_code:
+        if valid_code and valid_code.has_screens():
             # add code if not already in codes
             if entered_code not in codes:
                 codes.append(entered_code)
@@ -93,8 +93,9 @@ def access(request):
             else:
                 request.session['codes'] = codes
 
-            if valid_code.has_screens():
-                return redirect("screen-list")
+            return redirect("screen-list")
+        else:
+            messages.error(request, "Invalid Code")
 
     context = {
         'form':form,
