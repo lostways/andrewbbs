@@ -155,12 +155,13 @@ def member_login(request):
     }
     return render(request, 'members/login.html', context)
 
-def member_otp(request, pk):
+def member_login_verify(request, pk):
     """Request OTP"""
 
     valid = ""
 
     form = OTPForm(request.POST or None)
+
     if form.is_valid():
         code = form.cleaned_data.get('code')
         member = Member.objects.get(pk=pk)
@@ -175,7 +176,7 @@ def member_otp(request, pk):
                 messages.error(request, "Invalid code")
         else:
             valid = otp_status
-            #messages.error(request, "Invalid code")
+            messages.error(request, "Invalid code")
 
     context = {
         'form':form,
@@ -184,7 +185,7 @@ def member_otp(request, pk):
         'page_title': "Enter Authentication Code"
     }
 
-    return render(request, 'members/otp.html', context)
+    return render(request, 'members/verify.html', context)
 
 def member_logout(request):
     """Logout Member"""

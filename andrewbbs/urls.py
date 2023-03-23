@@ -30,8 +30,8 @@ urlpatterns = [
     ),
     path(
         "members/otp/<int:pk>",
-        views.member_otp,
-        name="member-otp"
+        views.member_login_verify,
+        name="member-login-verify"
     ),
     path(
         "members/logout",

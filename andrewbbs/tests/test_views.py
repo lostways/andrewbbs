@@ -316,3 +316,53 @@ class MemberTestCase(TestCase):
     data = {
       'handle': 'testuser',
     }
+
+    testuser_id = self.member_1.id
+
+    # mock OTP.send_code
+    with mock.patch('andrewbbs.auth.verify.OTP.send_code') as mock_send_code:
+      mock_send_code.return_value = True
+      response = self.client.post(reverse('member-login'), data)
+      mock_send_code.assert_called_once_with('+12345678901')
+      self.assertEqual(response.status_code, 302)
+      self.assertRedirects(response, reverse('member-login-verify', kwargs={'pk': testuser_id}))
+
+  def test_member_login_verify_view(self):
+    testuser_id = self.member_1.id
+
+    response = self.client.get(reverse('member-login-verify', kwargs={'pk': testuser_id}))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, 'members/verify.html')
+    self.assertContains(response, 'Auth Code')
+    self.assertNotContains(response, 'Invalid Code')
+
+  def test_member_login_verify_valid(self):
+    data = {
+      'code': '123456',
+    }
+
+    testuser_phone = self.member_1.phone.as_e164
+    testuser_id = self.member_1.id
+
+    with mock.patch('andrewbbs.auth.verify.OTP.verify_code') as mock_verify_code:
+      mock_verify_code.return_value = "approved"
+      response = self.client.post(reverse('member-login-verify', kwargs={'pk': testuser_id}), data)
+      mock_verify_code.assert_called_once_with(testuser_phone, '123456')
+      self.assertEqual(response.status_code, 302)
+      self.assertRedirects(response, reverse('screen-list'))
+
+  def test_member_login_verify_invalid(self):
+    data = {
+      'code': '123456',
+    }
+
+    testuser_phone = self.member_1.phone.as_e164
+    testuser_id = self.member_1.id
+
+    with mock.patch('andrewbbs.auth.verify.OTP.verify_code') as mock_verify_code:
+      mock_verify_code.return_value = False
+      response = self.client.post(reverse('member-login-verify', kwargs={'pk': testuser_id}), data)
+      mock_verify_code.assert_called_once_with(testuser_phone, '123456')
+      self.assertEqual(response.status_code, 200)
+      self.assertTemplateUsed(response, 'members/verify.html')
+      self.assertContains(response, 'Invalid code')

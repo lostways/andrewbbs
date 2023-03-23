@@ -1,0 +1,24 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<form class="light-green-box" method="post" action="{% url 'member-login-verify' pk %}">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Auth Code</legend>
+      <p>We sent a code your phone. Enter it to login</p>
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+            {{ message }}
+          </li>
+          {% endfor %}
+      </ul>
+      {% endif %}
+      {{form.as_p}}
+      <br />
+      <input type="submit" class="btn clear" value="< Submit >" />
+    </fieldset>
+</form>
+{% endblock %}
