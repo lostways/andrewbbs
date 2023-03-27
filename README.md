@@ -13,7 +13,7 @@ Docker is the prefered way to run a local development environment. Everything is
 
 Copy the local .env.example to .env and fill in the correct vars for your setup
 ```
-cp ./.env/local/django/.env.example ./env/local/django/.env
+cp ./.envs/local/.env.example ./envs/local/.env
 ```
 
 To build the image, make and run migrations, and run the dev server, use:
