@@ -1,5 +1,4 @@
 # Andrew BBS
-
 An expirement in "deep web" content mangement
 
 All contnet must be accesed using a appropite access code. Once screens are unlocked they are sotred in the session. If a user wants to save thier finding they can register as a member.
@@ -10,8 +9,12 @@ Uses:
 * [Bootstrap 386 Theme](https://github.com/kristopolous/BOOTSTRA.386)
  
 ## Development
-
 Docker is the prefered way to run a local development environment. Everything is automated using Make.
+
+Copy the local .env.example to .env and fill in the correct vars for your setup
+```
+cp ./.env/local/django/.env.example ./env/local/django/.env
+```
 
 To build the image, make and run migrations, and run the dev server, use:
 ```

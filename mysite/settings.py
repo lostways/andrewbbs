@@ -11,23 +11,21 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from dotenv import load_dotenv
 import os
-
-load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Settings from .env file
-SECRET_KEY = os.getenv('SECRET_KEY')
-DEBUG = os.getenv('DEBUG').lower() == 'true'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS','').split(',')
+# incase you want to print the ENVS
+#print('ENVS:', os.environ)
 
-OTP_ACCOUNT_SID = os.getenv('OTP_ACCOUNT_SID')
-OTP_AUTH_TOKEN = os.getenv('OTP_AUTH_TOKEN')
-OTP_SERVICE_ID = os.getenv('OTP_SERVICE_ID')
-OTP_TEMPLATE_ID = os.getenv('OTP_TEMPLATE_ID')
+# Settings from .env file
+SECRET_KEY = os.environ['SECRET_KEY']
+DEBUG = os.environ['DEBUG'].lower() == 'true'
+ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+OTP_ACCOUNT_SID = os.environ['OTP_ACCOUNT_SID']
+OTP_AUTH_TOKEN = os.environ['OTP_AUTH_TOKEN']
+OTP_SERVICE_ID = os.environ['OTP_SERVICE_ID']
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
