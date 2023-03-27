@@ -40,6 +40,7 @@ pipx==1.0.0
 platformdirs==2.5.2
 prompt-toolkit==3.0.31
 psutil==5.9.2
+psycopg2==2.9.5
 ptyprocess==0.7.0
 pure-eval==0.2.2
 Pygments==2.13.0
