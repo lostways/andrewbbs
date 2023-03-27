@@ -1,12 +1,15 @@
 # Makefile for Andrew BBS
 THIS_FILE := $(lastword $(MAKEFILE_LIST))
 
-.PHONY: build run stop migrate manage shell 
+.PHONY: build run stop migrate manage shell up
+
+# build the image, make and run migrations, and run the container
+run: build migrate up
 
 build:
 	@echo "==> Building Andrew BBS"
 	docker-compose build
-run:
+up:
 	@echo "==> Running Andrew BBS"
 	docker-compose up
 stop:
@@ -17,7 +20,8 @@ shell:
 	docker-compose exec app bash
 migrate:
 	@echo "==> Migrating Andrew BBS"
-	docker-compose exec app python manage.py migrate
+	docker-compose run app python manage.py makemigrations
+	docker-compose run app python manage.py migrate
 test:
 	@echo "==> Test Andrew BBS"
 	docker-compose exec app python manage.py test -v 2

@@ -1,6 +1,8 @@
 # Andrew BBS
 
-Platform for apps in a retro style
+An expirement in "deep web" content mangement
+
+All contnet must be accesed using a appropite access code. Once screens are unlocked they are sotred in the session. If a user wants to save thier finding they can register as a member.
 
 Uses:
 
@@ -9,26 +11,24 @@ Uses:
  
 ## Development
 
-Install packages
+Docker is the prefered way to run a local development environment. Everything is automated using Make.
 
+To build the image, make and run migrations, and run the dev server, use:
 ```
-pip install -r requirements.txt
-```
-
-Run Migrations
-
-```
-python manage.py migrate
+make run
 ```
 
-Create admin superuser
-
+The first time you run the app you'll want to create a superuser
 ```
-python manage.py createsuperuser
+make manage createsuperuser
 ```
 
-Run development server
-
+If you want to run the tests:
 ```
-python manage.py runserver
+make test
+```
+
+To run a django mangement command use `make manage`. For example:
+```
+make manage shell
 ```
