@@ -23,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ['SECRET_KEY']
 DEBUG = os.environ['DEBUG'].lower() == 'true'
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
+STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'andrewbbs' / 'static')
 
 OTP_ACCOUNT_SID = os.environ['OTP_ACCOUNT_SID']
 OTP_AUTH_TOKEN = os.environ['OTP_AUTH_TOKEN']
@@ -154,7 +155,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'andrewbbs' / 'static'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
