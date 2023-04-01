@@ -1,10 +1,10 @@
 FROM nginx:latest
 
 # Copy nginx configuration
-COPY ./docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/productnio/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy nginx configuration for mysite
-COPY ./docker/nginx/mysite.nginx.conf /etc/nginx/sites-available/mysite.nginx.conf
+COPY ./docker/production/nginx/mysite.nginx.conf /etc/nginx/sites-available/mysite.nginx.conf
 
 # Create a symbolic link to the sites-enabled directory
 RUN mkdir /etc/nginx/sites-enabled

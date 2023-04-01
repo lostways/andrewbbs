@@ -16,7 +16,7 @@ services:
       - uwsgi_data:/tmp/uwsgi/
       - web_static:/var/www/mysite/assets/:ro
     ports:
-      - "80:80"
+      - "8888:80"
       - "443:443"
     depends_on:
       - app
