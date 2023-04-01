@@ -1,0 +1,48 @@
+version: '3'
+
+volumes:
+  postgres_data:
+  uwsgi_data:
+  web_static:
+
+services:
+  nginx:
+    container_name: andrewbbs-nginx-prod
+    build:
+      context: .
+      dockerfile: ./docker/production/nginx/Dockerfile
+    restart: always
+    volumes:
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static:/var/www/mysite/assets/:ro
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - app
+  
+  app:
+    container_name: andrewbbs-prod
+    build:
+      context: .
+      dockerfile: ./docker/production/django/Dockerfile
+    env_file:
+      - ./.envs/production/.env
+    volumes:
+      - uwsgi_data:/tmp/uwsgi/
+      - web_static:/var/www/mysite/assets/:ro
+      - web_static:/app/andrewbbs/static/
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name: andrewbbs-postgres-prod
+    image: postgres:15
+    env_file:
+      - ./.envs/local/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - "5432:5432"
