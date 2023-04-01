@@ -1,5 +1,9 @@
 FROM nginx:latest
 
+# Copy SSL certificate and key
+COPY ./docker/production/nginx/ssl/${SSL_CERT} /etc/nginx/ssl/site-ssl.crt
+COPY ./docker/production/nginx/ssl/${SSL_KEY} /etc/nginx/ssl/site-ssl.key
+
 # Copy nginx configuration
 COPY ./docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
 

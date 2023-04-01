@@ -32,8 +32,6 @@ services:
       - uwsgi_data:/tmp/uwsgi/
       - web_static:/var/www/mysite/assets/:ro
       - web_static:/app/andrewbbs/static/
-    ports:
-      - "8000:8000"
     depends_on:
       - postgres
 
