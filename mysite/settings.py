@@ -25,6 +25,14 @@ DEBUG = os.environ['DEBUG'].lower() == 'true'
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'andrewbbs' / 'static')
 
+# SSL Settings
+if os.environ.get('USE_SSL', 'false').lower() == 'true':
+    SECURE_SSL_REDIRECT = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 OTP_ACCOUNT_SID = os.environ['OTP_ACCOUNT_SID']
 OTP_AUTH_TOKEN = os.environ['OTP_AUTH_TOKEN']
 OTP_SERVICE_ID = os.environ['OTP_SERVICE_ID']
@@ -39,8 +47,6 @@ DATABASE_URL = f'postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# ALLOWED_HOSTS = ['*']
 
 # Application definition
 

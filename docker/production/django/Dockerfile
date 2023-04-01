@@ -29,11 +29,6 @@ RUN pip install uwsgi && \
 # COPY app files
 COPY . .
 
-# Create a group and user to run our app and become that user
-ARG APP_USER=appuser
-RUN addgroup -S ${APP_USER} && adduser -S ${APP_USER} -G ${APP_USER}
-USER ${APP_USER}:${APP_USER}
-
 # Entry point
 ENTRYPOINT [ "/app/docker/production/django/entrypoint.sh" ]
 
