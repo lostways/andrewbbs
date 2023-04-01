@@ -1,7 +1,7 @@
 FROM nginx:latest
 
 # Copy nginx configuration
-COPY ./docker/productnion/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy nginx configuration for mysite
 COPY ./docker/production/nginx/mysite.nginx.conf /etc/nginx/sites-available/mysite.nginx.conf

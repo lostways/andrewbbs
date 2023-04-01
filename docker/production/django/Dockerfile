@@ -1,4 +1,4 @@
-FROM python:3.10-alpine as app
+FROM python:3.10-alpine
 
 # Set the working directory
 RUN mkdir /app
@@ -11,7 +11,8 @@ RUN apk add \
     linux-headers \
     pcre-dev \
     python3-dev \
-    postgresql-client
+    postgresql-client \
+    libpq-dev
 
 # Preventing python from writing
 # pyc to docker container

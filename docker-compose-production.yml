@@ -1,7 +1,7 @@
 version: '3'
 
 volumes:
-  postgres_data:
+  postgres_data_prod:
   uwsgi_data:
   web_static:
 
@@ -41,8 +41,8 @@ services:
     container_name: andrewbbs-postgres-prod
     image: postgres:15
     env_file:
-      - ./.envs/local/.env
+      - ./.envs/production/.env
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data_prod:/var/lib/postgresql/data/
     ports:
       - "5432:5432"
