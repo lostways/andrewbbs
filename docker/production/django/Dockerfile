@@ -3,7 +3,6 @@ FROM python:3.10-alpine
 # Set the working directory
 RUN mkdir /app
 WORKDIR /app
-COPY . .
 
 # Install dependencies
 RUN apk add \
@@ -22,8 +21,12 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # Install pip requirements
+COPY requirements.txt .
 RUN pip install uwsgi && \
     pip install --no-cache-dir -r requirements.txt
+
+# COPY app files
+COPY . .
 
 # Entry point
 ENTRYPOINT [ "/app/docker/production/django/entrypoint.sh" ]
