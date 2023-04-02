@@ -10,13 +10,15 @@ services:
     container_name: andrewbbs-nginx-prod
     build:
       context: .
+      args:
+        - NGINX_HOST=${NGINX_HOST:-localhost}
       dockerfile: ./docker/production/nginx/Dockerfile
     restart: always
     volumes:
       - uwsgi_data:/tmp/uwsgi/
       - web_static:/var/www/mysite/assets/:ro
     ports:
-      - "8888:80"
+      - "80:80"
       - "443:443"
     depends_on:
       - app

@@ -1,8 +1,12 @@
 FROM nginx:latest
 
+# Pass NGINX_HOSTNAME as a build argument
+ARG NGINX_HOSTNAME
+
 # Copy SSL certificate and key
-COPY ./docker/production/nginx/ssl/${SSL_CERT} /etc/nginx/ssl/site-ssl.crt
-COPY ./docker/production/nginx/ssl/${SSL_KEY} /etc/nginx/ssl/site-ssl.key
+RUN mkdir /etc/nginx/ssl
+COPY ./docker/production/nginx/ssl/${NGINX_HOSTNAME}.crt /etc/nginx/ssl/site-ssl.crt
+COPY ./docker/production/nginx/ssl/${NGINX_HOSTNAME}.key /etc/nginx/ssl/site-ssl.key
 
 # Copy nginx configuration
 COPY ./docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
