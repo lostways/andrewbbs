@@ -11,12 +11,8 @@ server {
     listen 80;
     listen [::]:80;
 
-    server_name andrewbbs.net www.andrewbbs.net;
+    server_name ${NGINX_HOST} www.${NGINX_HOST};
     server_tokens off;
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
 
     location / {
         return 301 https://$host$request_uri;
@@ -29,7 +25,7 @@ server {
     listen      443 ssl;
 
     # the domain name it will serve for
-    server_name localhost; # substitute your machine's IP address or FQDN
+    server_name ${NGINX_HOST}; # substitute your machine's IP address or FQDN
     charset     utf-8;
 
     ssl_certificate /etc/nginx/ssl/site-ssl.crt;
