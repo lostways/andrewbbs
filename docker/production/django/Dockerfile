@@ -1,6 +1,5 @@
 FROM python:3.10-alpine
 
-
 # Set the working directory
 RUN mkdir /app
 WORKDIR /app
@@ -27,10 +26,16 @@ RUN pip install uwsgi && \
     pip install --no-cache-dir -r requirements.txt
 
 # COPY app files
-COPY . .
+COPY ./app/ .
+
+# Copy entrypoint
+COPY ./docker/production/django/entrypoint.sh .
+
+# Copy uwsgi config
+COPY ./docker/production/django/uwsgi.ini .
 
 # Entry point
-ENTRYPOINT [ "/app/docker/production/django/entrypoint.sh" ]
+ENTRYPOINT [ "/app/entrypoint.sh" ]
 
 # Start uWSGI
-CMD [ "uwsgi", "--ini", "/app/docker/production/django/uwsgi.ini" ]
+CMD [ "uwsgi", "--ini", "/app/uwsgi.ini" ]

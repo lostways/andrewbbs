@@ -43,6 +43,7 @@ PgAdmin web app should be runing on `localhost:5050`.
 After you log in to PgAdmin you can access the DB by adding a new server with Mantaience DB set to your POSTGRES_DB, host set to `andrewbbs-postgres`, and our username and password set to the same ones you set in your .env
 
 ## TODO
+- Move SSL certs to ENV
 - production settings
   - Go through full check
 - Reorganize source files

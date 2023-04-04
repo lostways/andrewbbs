@@ -12,6 +12,8 @@ services:
       context: .
       args:
         - NGINX_HOST=${NGINX_HOST:-localhost}
+        - SSL_CERTIFICATE=${SSL_CERTIFICATE:-./docker/production/nginx/ssl/localhost.crt}
+        - SSL_CERTIFICATE_KEY=${SSL_CERTIFICATE_KEY:-./docker/production/nginx/ssl/localhost.key}
       dockerfile: ./docker/production/nginx/Dockerfile
     restart: always
     volumes:

@@ -1,15 +1,17 @@
-FROM nginx:latest
+FROM nginx:stable-alpine
 
-# Pass NGINX_HOST as a build argument
+# Pass build arguments
 ARG NGINX_HOST
+ARG SSL_CERTIFICATE
+ARG SSL_CERTIFICATE_KEY
 
 # Pass NGINX_HOST as an environment variable
 ENV NGINX_HOST=${NGINX_HOST}
 
 # Copy SSL certificate and key
 RUN mkdir /etc/nginx/ssl
-COPY ./docker/production/nginx/ssl/${NGINX_HOST}.crt /etc/nginx/ssl/site-ssl.crt
-COPY ./docker/production/nginx/ssl/${NGINX_HOST}.key /etc/nginx/ssl/site-ssl.key
+COPY ${SSL_CERTIFICATE} /etc/nginx/ssl/site-ssl.crt
+COPY ${SSL_CERTIFICATE_KEY} /etc/nginx/ssl/site-ssl.key
 
 # Copy nginx configuration
 COPY ./docker/production/nginx/nginx.conf /etc/nginx/nginx.conf
