@@ -62,9 +62,6 @@ COPY ./docker/production/django/entrypoint.sh .
 # Copy uwsgi config
 COPY ./docker/production/django/uwsgi.ini .
 
-# Activate virtual environment
-ENV PATH="/opt/venv/bin:$PATH"
-
 # Entry point
 ENTRYPOINT [ "/app/entrypoint.sh" ]
 
