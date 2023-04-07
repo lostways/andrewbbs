@@ -37,8 +37,7 @@ services:
       - ./.envs/production/.env
     volumes:
       - uwsgi_data:/tmp/uwsgi/
-      - web_static:/var/www/mysite/assets/:ro
-      - web_static:/app/andrewbbs/static/
+      - web_static:/var/www/mysite/assets/:rw
 #    depends_on:
 #      - postgres
 #####
