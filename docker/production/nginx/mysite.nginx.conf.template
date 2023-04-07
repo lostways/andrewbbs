@@ -40,6 +40,7 @@ server {
     #}
 
     location /static {
+        include /etc/nginx/mime.types;
         alias /var/www/mysite/assets; # your Django project's static files - amend as required
     }
 
