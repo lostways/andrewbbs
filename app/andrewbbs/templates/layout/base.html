@@ -9,7 +9,7 @@
 
     <meta charset="UTF-8">
     <meta property="og:title" content="Andrew BBS {% if page_title %} - {{page_title}} {% endif %}" />
-    <meta property="og:image" content="{% static 'img/andrew-bbs-screenshot.png' %}" />
+    <meta property="og:image" content="{{request.scheme}}://{{request.META.HTTP_HOST}}{% static 'img/andrew-bbs-screenshot.png' %}" />
     <title>Andrew BBS {% if page_title %} - {{page_title}} {% endif %}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'css/386/bootstrap.min.css' %}">
