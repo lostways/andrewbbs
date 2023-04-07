@@ -46,6 +46,8 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
 - DevOps
   - add make targets for production
   - add continuous deployment via workflows
+  - move certs to volumes
+  - Reduce size of django image?
 - App
   - Add join server button
   - Add view and edit member details
