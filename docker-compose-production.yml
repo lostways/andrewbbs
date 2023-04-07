@@ -1,13 +1,14 @@
 version: '3'
 
 volumes:
-  postgres_data_prod:
+#  postgres_data_prod:
   uwsgi_data:
   web_static:
 
 services:
   nginx:
     container_name: andrewbbs-nginx-prod
+    image: andrewbbs/nginx:prod
     build:
       context: .
       args:
@@ -27,24 +28,29 @@ services:
   
   app:
     container_name: andrewbbs-prod
+    image: andrewbbs/app:prod
     build:
       context: .
       dockerfile: ./docker/production/django/Dockerfile
+    restart: always
     env_file:
       - ./.envs/production/.env
     volumes:
       - uwsgi_data:/tmp/uwsgi/
       - web_static:/var/www/mysite/assets/:ro
       - web_static:/app/andrewbbs/static/
-    depends_on:
-      - postgres
-
-  postgres:
-    container_name: andrewbbs-postgres-prod
-    image: postgres:15
-    env_file:
-      - ./.envs/production/.env
-    volumes:
-      - postgres_data_prod:/var/lib/postgresql/data/
-    ports:
-      - "5432:5432"
+#    depends_on:
+#      - postgres
+#####
+#  Uncomment this if you want a local postgres db in production
+#####
+#  postgres:
+#    container_name: andrewbbs-postgres-prod
+#    image: postgres:15
+#    env_file:
+#      - ./.envs/production/.env
+#    restart: always
+#    volumes:
+#      - postgres_data_prod:/var/lib/postgresql/data/
+#    ports:
+#      - "5432:5432"
