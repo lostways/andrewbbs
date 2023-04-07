@@ -6,6 +6,7 @@ volumes:
 services:
   app:
     container_name: andrewbbs
+    image: andrewbbs/app:dev
     depends_on:
       - postgres
     build:
