@@ -53,3 +53,4 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - Add view member list
   - Add message sysop feature 
   - Null OTP driver for dev
+  - Alerts for new joins

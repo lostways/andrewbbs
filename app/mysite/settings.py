@@ -25,6 +25,12 @@ DEBUG = os.environ['DEBUG'].lower() == 'true'
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'andrewbbs' / 'static')
 
+# OTP Settings
+OTP_PROVIDER = os.environ.get('OTP_PROVIDER', 'local')
+OTP_ACCOUNT_SID = os.environ.get('OTP_ACCOUNT_SID', '')
+OTP_AUTH_TOKEN = os.environ.get('OTP_AUTH_TOKEN', '')
+OTP_SERVICE_ID = os.environ.get('OTP_SERVICE_ID', '')
+
 # SSL Settings
 if os.environ.get('USE_SSL', 'false').lower() == 'true':
     SECURE_SSL_REDIRECT = True
@@ -32,10 +38,6 @@ if os.environ.get('USE_SSL', 'false').lower() == 'true':
     SECURE_BROWSER_XSS_FILTER = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-OTP_ACCOUNT_SID = os.environ['OTP_ACCOUNT_SID']
-OTP_AUTH_TOKEN = os.environ['OTP_AUTH_TOKEN']
-OTP_SERVICE_ID = os.environ['OTP_SERVICE_ID']
 
 POSTGRES_DB = os.environ['POSTGRES_DB']
 POSTGRES_USER = os.environ['POSTGRES_USER']

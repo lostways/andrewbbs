@@ -1,18 +1,12 @@
+import importlib
 from django.conf import settings
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
 
-client = Client(settings.OTP_ACCOUNT_SID, settings.OTP_AUTH_TOKEN)
-service = client.verify.services(settings.OTP_SERVICE_ID)
+def get_otp_provider():
+  # Import the OTP class based on the OTP_PROVIDER setting
+  otp_module = importlib.import_module(f"andrewbbs.auth.OTP.{settings.OTP_PROVIDER}")
 
-class OTP:
-  def send_code(receiver):
-    verification = service.verifications.create(to=receiver, channel='sms')
-    return verification.status
+  # Assign the OTP class to the OTP variable
+  OTP = otp_module.OTP
 
-  def verify_code(receiver, code):
-    try:
-      verification_check = service.verification_checks.create(to=receiver, code=code)
-    except TwilioRestException:
-      return False
-    return verification_check.status 
+  # Return the OTP class
+  return OTP

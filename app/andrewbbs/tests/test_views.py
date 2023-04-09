@@ -1,5 +1,6 @@
 # Tests for the views in the andrewbbs app
 from unittest import mock
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -7,7 +8,6 @@ from django.forms.models import model_to_dict
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
-from ..auth.verify import OTP
 
 
 User = get_user_model()
@@ -319,8 +319,11 @@ class MemberTestCase(TestCase):
 
     testuser_id = self.member_1.id
 
-    # mock OTP.send_code
-    with mock.patch('andrewbbs.auth.verify.OTP.send_code') as mock_send_code:
+    # Test with twilio provider
+    settings.OTP_PROVIDER = 'twilio'
+
+    # Mock the send_code method on the twilio provider
+    with mock.patch('andrewbbs.auth.OTP.twilio.OTP.send_code') as mock_send_code:
       mock_send_code.return_value = True
       response = self.client.post(reverse('member-login'), data)
       mock_send_code.assert_called_once_with('+12345678901')
@@ -344,7 +347,10 @@ class MemberTestCase(TestCase):
     testuser_phone = self.member_1.phone.as_e164
     testuser_id = self.member_1.id
 
-    with mock.patch('andrewbbs.auth.verify.OTP.verify_code') as mock_verify_code:
+    # Test with twilio provider
+    settings.OTP_PROVIDER = 'twilio'
+
+    with mock.patch('andrewbbs.auth.OTP.twilio.OTP.verify_code') as mock_verify_code:
       mock_verify_code.return_value = "approved"
       response = self.client.post(reverse('member-login-verify', kwargs={'pk': testuser_id}), data)
       mock_verify_code.assert_called_once_with(testuser_phone, '123456')
@@ -359,7 +365,10 @@ class MemberTestCase(TestCase):
     testuser_phone = self.member_1.phone.as_e164
     testuser_id = self.member_1.id
 
-    with mock.patch('andrewbbs.auth.verify.OTP.verify_code') as mock_verify_code:
+    # Test with twilio provider
+    settings.OTP_PROVIDER = 'twilio'
+
+    with mock.patch('andrewbbs.auth.OTP.twilio.OTP.verify_code') as mock_verify_code:
       mock_verify_code.return_value = False
       response = self.client.post(reverse('member-login-verify', kwargs={'pk': testuser_id}), data)
       mock_verify_code.assert_called_once_with(testuser_phone, '123456')

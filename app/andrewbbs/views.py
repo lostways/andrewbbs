@@ -9,7 +9,7 @@ from .forms import AccessCodeForm
 from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
-from .auth.verify import OTP
+from .auth.verify import get_otp_provider
 
 User = get_user_model()
 
@@ -145,6 +145,7 @@ def member_login(request):
         handle = form.cleaned_data.get('handle')
         try:
             member = Member.objects.get(handle=handle)
+            OTP = get_otp_provider()
             OTP.send_code(member.phone.as_e164)
             return redirect("/members/otp/{}".format(member.pk))
         except Member.DoesNotExist:
@@ -166,6 +167,7 @@ def member_login_verify(request, pk):
     if form.is_valid():
         code = form.cleaned_data.get('code')
         member = Member.objects.get(pk=pk)
+        OTP = get_otp_provider()
         otp_status = OTP.verify_code(member.phone.as_e164, code)
         if otp_status == "approved":
             valid = "True"
