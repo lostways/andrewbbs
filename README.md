@@ -36,6 +36,11 @@ To run a django mangement command use `make manage`. For example:
 make manage shell
 ```
 
+## OTP Login
+The app is able to use the Twilio api to do OTP login. See (Twilio Verification)[https://www.twilio.com/docs/verify/api] API for more details. 
+
+For development there is a local OTP provider that doesn't depend on Twilio. To use it set `OTP_PROVIER` to 'local'. The correct auth code is sent to the logs. Use it to login.
+
 ## Database
 A Postgress DB should be running on `localhost:5432`. 
 PgAdmin web app should be runing on `localhost:5050`. 
@@ -52,5 +57,4 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - Add view and edit member details
   - Add view member list
   - Add message sysop feature 
-  - Null OTP driver for dev
   - Alerts for new joins

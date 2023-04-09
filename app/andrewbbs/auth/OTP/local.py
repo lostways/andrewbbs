@@ -12,4 +12,4 @@ class OTP:
     if code == CODE:
       return "approved"
     else:
-      return False
+      return "pending"
