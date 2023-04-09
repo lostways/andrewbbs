@@ -37,7 +37,7 @@ make manage shell
 ```
 
 ## OTP Login
-The app is able to use the Twilio api to do OTP login. See (Twilio Verification)[https://www.twilio.com/docs/verify/api] API for more details. 
+The app is able to use the Twilio api to do OTP login. See (Twilio Verification API)[https://www.twilio.com/docs/verify/api] for more details. 
 
 For development there is a local OTP provider that doesn't depend on Twilio. To use it set `OTP_PROVIER` to 'local'. The correct auth code is sent to the logs. Use it to login.
 
