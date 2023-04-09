@@ -1,6 +1,6 @@
 from django.conf import settings
 
-CODE = 12345
+CODE = "12345"
 
 class OTP:
 
