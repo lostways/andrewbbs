@@ -49,7 +49,7 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - move certs to volumes
   - Reduce size of django image?
 - App
-  - Add join server button
   - Add view and edit member details
   - Add view member list
   - Add message sysop feature 
+  - Null OTP driver for dev

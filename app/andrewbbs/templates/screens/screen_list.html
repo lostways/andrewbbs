@@ -2,6 +2,12 @@
 
 {% block content %}
 <h3 class="text-center">Screens Unlocked</h3>
+{% if request.user.is_authenticated == False %}
+  <div class="alert alert-notice">
+    You can now <a href="{% url 'member-login' %}">Login to the server</a>. <br />
+    To save your screen list <a href="{% url 'member-register' %}">Join the server</a>.
+  </div>
+{% endif %}
 <table class=table>
   <thead>
     <tr>
@@ -22,5 +28,5 @@
 {% endfor %}
   </tbody>
 </table>
-<a href="{% url 'access' %}" class="btn">New Access Code</a>
+<a href="{% url 'access' %}" class="btn">Enter New Access Code</a>
 {% endblock %}
