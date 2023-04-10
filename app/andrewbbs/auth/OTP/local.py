@@ -9,7 +9,7 @@ class OTP:
     OTP.CODE = ''.join(random.choices(string.digits, k=6))
     print(f"code for {receiver} is {OTP.CODE}")
     return True 
-    
+
   def verify_code(receiver, code):
     if code == OTP.CODE:
       return "approved"
