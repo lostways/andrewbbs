@@ -1,15 +1,17 @@
-from django.conf import settings
-
-CODE = "12345"
+import random
+import string
 
 class OTP:
 
+  CODE = ""
+
   def send_code(receiver):
-    print(f"code for {receiver} is {CODE}")
+    OTP.CODE = ''.join(random.choices(string.digits, k=6))
+    print(f"code for {receiver} is {OTP.CODE}")
     return True 
     
   def verify_code(receiver, code):
-    if code == CODE:
+    if code == OTP.CODE:
       return "approved"
     else:
       return "pending"
