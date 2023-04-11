@@ -1,7 +1,9 @@
 # Andrew BBS
 An expirement in "deep web" content mangement
 
-All contnet must be accesed using a appropite access code. Once screens are unlocked they are sotred in the session. If a user wants to save thier finding they can register as a member.
+![andrew-bbs-screenshot](https://user-images.githubusercontent.com/1101232/231088045-71506ca9-e771-4604-9535-cb01f09ce1d6.png)
+
+All content must be accesed using a appropite access code. Once screens are unlocked they are stored in the session. If a user wants to save thier findings they can register as a member.
 
 Uses:
 
