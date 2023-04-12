@@ -34,7 +34,7 @@ def index(request):
 
         context = {
             'screen_list': screens,
-            'page_title': "Sreens"
+            'page_title': "Screens"
         }
         return render(request, 'screens/screen_list.html', context)
 
