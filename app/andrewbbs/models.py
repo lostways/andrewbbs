@@ -112,3 +112,17 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.handle
+
+class Message(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_messages')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_messages')
+    body = models.TextField()
+    read = models.BooleanField(default=False)
+    subject = models.CharField(max_length=300, blank=False)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-timestamp']
+    
+    def __str__(self):
+        return f"Messsage from {self.sender} to {self.recipient}"

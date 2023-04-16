@@ -3,8 +3,77 @@ from django.contrib.auth import get_user_model
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
+from ..models import Message
 
 User = get_user_model()
+
+class MessageTestCase(TestCase):
+  def setUp(self):
+    self.test_sender = User.objects.create_user(
+      handle="testsender",
+      phone="+1234567890",
+      password="testpassword"
+    )
+
+    self.test_recipient = User.objects.create_user(
+      handle="testrecipient",
+      phone="+1234567891",
+      password="testpassword"
+    )
+  
+  def test_send_message(self):
+    test_message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body",
+      subject="Test Message Subject"
+    )
+
+    self.assertEqual(test_message.sender, self.test_sender)
+    self.assertEqual(test_message.recipient, self.test_recipient)
+    self.assertEqual(test_message.body, "Test Message Body")
+    self.assertEqual(test_message.subject, "Test Message Subject")
+
+  def test_get_messages(self):
+    test_message_1 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 1",
+      subject="Test Message Subject 1"
+    )
+
+    test_message_2 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 2",
+      subject="Test Message Subject 2"
+    )
+
+    test_message_3 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 3",
+      subject="Test Message Subject 3"
+    )
+
+    # Get all messages sent to test_recipient
+    recipeient_messages = Message.objects.filter(recipient=self.test_recipient)
+
+    # Check that the messages are in the correct order
+    self.assertEqual(len(recipeient_messages), 3)
+    self.assertEqual(recipeient_messages[0].body, "Test Message Body 3") 
+    self.assertEqual(recipeient_messages[1].body, "Test Message Body 2")
+    self.assertEqual(recipeient_messages[2].body, "Test Message Body 1")
+
+    # Get all messages sent by test_sender
+    sender_messages = Message.objects.filter(sender=self.test_sender)
+
+    # Check that the messages are in the correct order
+    self.assertEqual(len(sender_messages), 3)
+    self.assertEqual(sender_messages[0].body, "Test Message Body 3")
+    self.assertEqual(sender_messages[1].body, "Test Message Body 2")
+    self.assertEqual(sender_messages[2].body, "Test Message Body 1")
+
 
 class MemberTestCase(TestCase):
   
