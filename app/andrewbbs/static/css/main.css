@@ -92,6 +92,10 @@ form legend {
     text-align: center;
 }
 
+form .width-full {
+    width: 100%;
+}
+
 label.required::after {
     content: "<-- Required";
     color: #000084;
@@ -113,6 +117,6 @@ form.member-login {
     max-width: 15rem; 
 }
 
-form.member-message textarea {
-    width: 100%;
+form.member-message {
+    max-width: 80rem; 
 }

@@ -9,8 +9,8 @@ User = get_user_model()
 
 class MessageForm(forms.Form):
    recipient = forms.CharField(max_length=100, label="To Handle")
-   subject = forms.CharField(max_length=300, label="Subject")
-   body = forms.CharField(widget=forms.Textarea, label="Message")
+   subject = forms.CharField(widget=forms.TextInput({'size': 80, 'class' : 'width-full'}), max_length=80, label="Subject")
+   body = forms.CharField(widget=forms.Textarea({'class': 'width-full', 'cols': 40}), max_length=1024, label="Message")
 
    # find recipient and validate that they exist
    def clean_recipient(self):
