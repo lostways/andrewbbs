@@ -58,5 +58,9 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
 - App
   - Add view and edit member details
   - Add view member list
-  - Add message sysop feature 
+  - Add message system
+    - Send message form
+    - view unread messages
+    - Send message in menu
+    - Mesage notifications
   - Alerts for new joins
