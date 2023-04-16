@@ -122,14 +122,14 @@ def member_message_send(request):
             subject=form.cleaned_data['subject']
         )
         message.save()
-        return render(request, "members/message-sent.html", {'page_title': "Message Sent"})
+        return render(request, "members/messages/sent.html", {'page_title': "Message Sent"})
 
 
     context = {
         'form':form,
         'page_title': "Enter Message"
     }
-    return render(request, 'members/message-send.html', context)
+    return render(request, 'members/messages/send.html', context)
 
 def member_register(request):
     """Register as a member"""

@@ -35,8 +35,9 @@ class MessageTestCase(TestCase):
   def test_send_message_view_get(self):
     self.client.force_login(self.test_sender)
     response = self.client.get(reverse("member-message-send"))
+
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/message-send.html")
+    self.assertTemplateUsed(response, "members/messages/send.html")
 
   def test_send_message_view_post(self):
     self.client.force_login(self.test_sender)
@@ -52,7 +53,9 @@ class MessageTestCase(TestCase):
 
     #print(response.content)
     self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/sent.html")
     self.assertContains(response, "Message Sent")
+
     self.assertEqual(Message.objects.count(), 1)
     self.assertEqual(Message.objects.first().sender, self.test_sender)
     self.assertEqual(Message.objects.first().recipient, self.test_recipient)
@@ -72,6 +75,7 @@ class MessageTestCase(TestCase):
     )
 
     self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/send.html")
     self.assertEqual(response.context["form"].errors["recipient"][0], "Handle not found")
     self.assertEqual(Message.objects.count(), 0)
 
