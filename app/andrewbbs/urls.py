@@ -43,4 +43,19 @@ urlpatterns = [
         views.member_message_send,
         name="member-message-send"
     ),
+    path(
+        "members/messages/sent",
+        views.member_message_sent,
+        name="member-message-sent"
+    ),
+    path(
+        "members/messages/<int:pk>",
+        views.member_message_detail,
+        name="member-message-detail"
+    ),
+    path(
+        "members/messages",
+        views.member_message_list,
+        name="member-message-list"
+    ),
 ]

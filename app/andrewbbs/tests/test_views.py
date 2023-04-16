@@ -37,7 +37,7 @@ class MessageTestCase(TestCase):
     response = self.client.get(reverse("member-message-send"))
 
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/messages/send.html")
+    self.assertTemplateUsed(response, "members/messages/message_send.html")
 
   def test_send_message_view_post(self):
     self.client.force_login(self.test_sender)
@@ -52,9 +52,8 @@ class MessageTestCase(TestCase):
     )
 
     #print(response.content)
-    self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/messages/sent.html")
-    self.assertContains(response, "Message Sent")
+    self.assertEqual(response.status_code, 302)
+    self.assertRedirects(response, reverse("member-message-sent"))
 
     self.assertEqual(Message.objects.count(), 1)
     self.assertEqual(Message.objects.first().sender, self.test_sender)
@@ -75,9 +74,45 @@ class MessageTestCase(TestCase):
     )
 
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/messages/send.html")
+    self.assertTemplateUsed(response, "members/messages/message_send.html")
     self.assertEqual(response.context["form"].errors["recipient"][0], "Handle not found")
     self.assertEqual(Message.objects.count(), 0)
+  
+  def test_message_sent_view_unauthenticated(self):
+    response = self.client.get(reverse("member-message-sent"))
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-sent')}")
+  
+  def test_message_sent_view_get(self):
+    self.client.force_login(self.test_sender)
+
+    # Create 3 messages, 2 of which are sent by the test sender
+    # and 1 of which is sent to the test sender
+
+    message_1 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 1",
+      body="Test Message Body 1"
+    )
+
+    message_2 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 2",
+      body="Test Message Body 2"
+    )
+
+    message_3 = Message.objects.create(
+      sender=self.test_recipient,
+      recipient=self.test_sender,
+      subject="Test Message Subject 3",
+      body="Test Message Body 3"
+    )
+
+    response = self.client.get(reverse("member-message-sent"))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/message_list.html")
 
 class ScreenTestCase(TestCase):
       

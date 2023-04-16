@@ -107,8 +107,44 @@ def access(request):
     return render(request, 'access.html', context)
 
 @login_required
+def member_message_list(request):
+    """List Messages"""
+
+    messages = request.user.received_messages.all()
+
+    context = {
+        'messages': messages,
+        'page_title': "Messages"
+    }
+    return render(request, 'members/messages/message_list.html', context)
+
+@login_required
+def member_message_sent(request):
+    """Sent Messages"""
+
+    messages = request.user.sent_messages.all()
+
+    context = {
+        'messages': messages,
+        'page_title': "Sent Messages"
+    }
+    return render(request, 'members/messages/message_list.html', context)
+
+@login_required
+def member_message_detail(request, pk):
+    """Messages Detail"""
+
+    message = Message.objects.get(recipeint=request.user, pk=pk)
+
+    context = {
+        'message': message,
+        'page_title': "Message Detail - " + message.subject
+    }
+    return render(request, 'members/messages/message_detail.html', context)
+
+@login_required
 def member_message_send(request):
-    """Enter Message"""
+    """Send Message"""
 
     form = MessageForm(request.POST or None)
 
@@ -122,14 +158,13 @@ def member_message_send(request):
             subject=form.cleaned_data['subject']
         )
         message.save()
-        return render(request, "members/messages/sent.html", {'page_title': "Message Sent"})
-
+        return redirect('member-message-sent')
 
     context = {
         'form':form,
         'page_title': "Enter Message"
     }
-    return render(request, 'members/messages/send.html', context)
+    return render(request, 'members/messages/message_send.html', context)
 
 def member_register(request):
     """Register as a member"""

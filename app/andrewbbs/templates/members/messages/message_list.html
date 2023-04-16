@@ -1,0 +1,29 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<table class=table>
+  <thead>
+    <tr>
+      <th>Sent</th>
+      <th>To</th>
+      <th>Subject</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for messages in messages %}
+    <tr>
+      <td>{{ message.timestamp }}</td>
+      <td>{{ message.recipient.handle }}</td>
+      <td>
+        <a href="{{ message.get_abolute_url }}">
+          {{ message.subject }}
+        </a>
+      </td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+
+<a href="{% url 'member-message-list' %}" class="btn">Back to Messages</a>
+<a href="{% url 'member-message-send' %}" class="btn">New Message</a>
+{% endblock %}

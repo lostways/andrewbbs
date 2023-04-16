@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.urls import reverse
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -120,6 +121,9 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     subject = models.CharField(max_length=300, blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def get_absolute_url(self):
+        return reverse('member-message-detail', args=[str(self.id)])
 
     class Meta:
         ordering = ['-timestamp']
