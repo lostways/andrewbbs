@@ -1,7 +1,7 @@
 {% extends 'layout/base.html' %}
 
 {% block content %}
-<form class="light-green-box member-message-send" method="post" action="{% url 'member-message-send' %}">
+<form class="light-green-box member-message" method="post" action="{% url 'member-message-send' %}">
     {% csrf_token %}
     <fieldset>
       <legend>Send Message</legend>

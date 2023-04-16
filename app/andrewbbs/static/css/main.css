@@ -112,3 +112,7 @@ form.member-register select {
 form.member-login {
     max-width: 15rem; 
 }
+
+form.member-message textarea {
+    width: 100%;
+}
