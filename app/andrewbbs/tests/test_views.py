@@ -8,9 +8,72 @@ from django.forms.models import model_to_dict
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
+from ..models import Message
 
 
 User = get_user_model()
+
+class MessageTestCase(TestCase):
+  def setUp(self):
+    self.test_sender = User.objects.create_user(
+      handle="testsender",
+      phone="+1234567890",
+      password="testpassword"
+    )
+
+    self.test_recipient = User.objects.create_user(
+      handle="testrecipient",
+      phone="+1234567891",
+      password="testpassword"
+    )
+
+  def test_send_message_view_unauthenticated(self):
+    response = self.client.get(reverse("member-message-send"))
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-send')}") 
+
+  def test_send_message_view_get(self):
+    self.client.force_login(self.test_sender)
+    response = self.client.get(reverse("member-message-send"))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/message-send.html")
+
+  def test_send_message_view_post(self):
+    self.client.force_login(self.test_sender)
+
+    response = self.client.post(
+      reverse("member-message-send"),
+      {
+        "recipient": self.test_recipient.handle,
+        "subject": "Test Message Subject",
+        "body": "Test Message Body"
+      }
+    )
+
+    #print(response.content)
+    self.assertEqual(response.status_code, 200)
+    self.assertContains(response, "Message Sent")
+    self.assertEqual(Message.objects.count(), 1)
+    self.assertEqual(Message.objects.first().sender, self.test_sender)
+    self.assertEqual(Message.objects.first().recipient, self.test_recipient)
+    self.assertEqual(Message.objects.first().subject, "Test Message Subject")
+    self.assertEqual(Message.objects.first().body, "Test Message Body")
+  
+  def test_send_message_view_invalid_recipient(self):
+    self.client.force_login(self.test_sender)
+
+    response = self.client.post(
+      reverse("member-message-send"),
+      {
+        "recipient": "invalidrecipient",
+        "subject": "Test Message Subject",
+        "body": "Test Message Body"
+      }
+    )
+
+    self.assertEqual(response.status_code, 200)
+    self.assertEqual(response.context["form"].errors["recipient"][0], "Handle not found")
+    self.assertEqual(Message.objects.count(), 0)
 
 class ScreenTestCase(TestCase):
       

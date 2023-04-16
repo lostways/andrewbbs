@@ -3,8 +3,22 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth import get_user_model
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
+from .models import Message
 
 User = get_user_model()
+
+class MessageForm(forms.Form):
+   recipient = forms.CharField(max_length=100, label="To Handle")
+   subject = forms.CharField(max_length=300, label="Subject")
+   body = forms.CharField(widget=forms.Textarea, label="Message")
+
+   # find recipient and validate that they exist
+   def clean_recipient(self):
+      recipient = self.cleaned_data.get('recipient')
+      if not User.objects.filter(handle=recipient).exists():
+         raise forms.ValidationError("Handle not found")
+      return recipient
+
 class AccessCodeForm(forms.Form):
    code = forms.CharField(max_length=100, label="") 
 

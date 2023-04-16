@@ -2,13 +2,16 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
+from django.contrib.auth.decorators import login_required
 from .models import Screen
 from .models import AccessCode
 from .models import Member
+from .models import Message
 from .forms import AccessCodeForm
 from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
+from .forms import MessageForm
 from .auth.verify import get_otp_provider
 
 User = get_user_model()
@@ -102,6 +105,31 @@ def access(request):
         'page_title': "Enter Access Code"
     }
     return render(request, 'access.html', context)
+
+@login_required
+def member_message_send(request):
+    """Enter Message"""
+
+    form = MessageForm(request.POST or None)
+
+    if form.is_valid():
+        sender = request.user
+        recipient = Member.objects.get(handle=form.cleaned_data['recipient'])
+        message = Message(
+            sender=sender,
+            recipient=recipient,
+            body=form.cleaned_data['body'],
+            subject=form.cleaned_data['subject']
+        )
+        message.save()
+        return render(request, "members/message-sent.html", {'page_title': "Message Sent"})
+
+
+    context = {
+        'form':form,
+        'page_title': "Enter Message"
+    }
+    return render(request, 'members/message-send.html', context)
 
 def member_register(request):
     """Register as a member"""

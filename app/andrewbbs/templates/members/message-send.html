@@ -1,0 +1,23 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<form class="light-green-box member-message-send" method="post" action="{% url 'member-message-send' %}">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Send Message</legend>
+      {% for field in form %}
+      <p>
+        <label 
+          {% if field.field.required %}class="required"{% endif %}
+          for="{{ field.id_for_label }}"
+        >
+        {{ field.label }}
+        </label>
+        {{ field.errors }}
+        {{ field }}
+      </p>
+      {% endfor %}
+      <input type="submit" class="btn clear" value="< Send >" />
+    </fieldset>
+</form>
+{% endblock %}

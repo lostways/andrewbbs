@@ -1,0 +1,9 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<div class="light-green-box">
+<h2>Message Sent</h2>
+  <a href="{% url 'screen-list' %}" class="btn">Back to Screens</a>
+  <a href="{% url 'member-message-send' %}" class="btn">New Message</a>
+</div>
+{% endblock %}

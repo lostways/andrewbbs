@@ -38,4 +38,9 @@ urlpatterns = [
         views.member_logout,
         name="member-logout"
     ),
+    path(
+        "members/messages/send",
+        views.member_message_send,
+        name="member-message-send"
+    ),
 ]
