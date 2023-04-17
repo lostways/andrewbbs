@@ -10,12 +10,12 @@
     </tr>
   </thead>
   <tbody>
-{% for messages in messages %}
+{% for message in messages %}
     <tr>
       <td>{{ message.timestamp }}</td>
       <td>{{ message.recipient.handle }}</td>
       <td>
-        <a href="{{ message.get_abolute_url }}">
+        <a href="{% url 'member-message-detail' message.id %}">
           {{ message.subject }}
         </a>
       </td>

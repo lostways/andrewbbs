@@ -3,6 +3,7 @@ from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from .models import Screen
 from .models import AccessCode
 from .models import Member
@@ -134,7 +135,7 @@ def member_message_sent(request):
 def member_message_detail(request, pk):
     """Messages Detail"""
 
-    message = Message.objects.get(recipeint=request.user, pk=pk)
+    message = get_object_or_404(Message, Q(pk=pk), Q(sender=request.user) | Q(recipient=request.user))
 
     context = {
         'message': message,

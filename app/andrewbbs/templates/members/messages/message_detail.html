@@ -2,9 +2,10 @@
 {% load markdown_extras %}
 
 {% block content %}
-<h3 class="text-center page-header">{{ message.subject }}</h3>
-
-{{ message.body | safe }}
-
-<a href="{% url 'member-messages-list' %}" class="btn">Back to Messages</a>
+<h1 class="text-center page-header">{{ message.subject }}</h1>
+<p>{{ message.timestamp }}</p>
+<p>FROM: {{ message.sender.handle }}</p>
+<p>SUBJECT: {{ message.subject }}</p>
+<p>{{ message.body | safe }}</p>
+<p><a href="{% url 'member-message-list' %}" class="btn">Back to Messages</a></p>
 {% endblock %}

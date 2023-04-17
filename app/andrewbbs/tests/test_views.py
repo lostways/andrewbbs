@@ -113,6 +113,60 @@ class MessageTestCase(TestCase):
     response = self.client.get(reverse("member-message-sent"))
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, "members/messages/message_list.html")
+    self.assertEqual(response.context["messages"].count(), 2)
+    self.assertEqual(response.context["messages"][0], message_2)
+    self.assertEqual(response.context["messages"][1], message_1)
+
+    #print(response.content)
+    self.assertContains(response, "Test Message Subject 1")
+    self.assertContains(response, "Test Message Subject 2")
+    self.assertNotContains(response, "Test Message Subject 3")
+  
+  def test_message_detail_view_unauthenticated(self):
+    message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject",
+      body="Test Message Body"
+    )
+
+    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-detail', kwargs={'pk': message.pk})}")
+  
+  def test_message_detail_view_get(self):
+    self.client.force_login(self.test_sender)
+
+    message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject",
+      body="Test Message Body"
+    )
+
+    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/message_detail.html")
+    self.assertEqual(response.context["message"], message)
+  
+  def test_message_detail_view_not_authorised(self):
+    new_user = User.objects.create_user(
+      handle="newuser",
+      phone="+1234567894",
+      password="newpassword"
+    )
+
+    self.client.force_login(new_user)
+
+    message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject",
+      body="Test Message Body"
+    )
+
+    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    self.assertEqual(response.status_code, 404)
 
 class ScreenTestCase(TestCase):
       
