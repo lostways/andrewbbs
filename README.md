@@ -59,8 +59,12 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - Add view and edit member details
   - Add view member list
   - Add message system
-    - Send message form
-    - view unread messages
-    - Send message in menu
+    - view read/unread messages
+    - Active highlight in sidebar
+    - messages main nav
+    - link to markdown intruction on send form
     - Mesage notifications
+    - Add admin send to all feature
+    - convert message ids to UUIDS
+    - add reply to message feature
   - Alerts for new joins
