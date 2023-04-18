@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <script>
+      _386 = { onePass: true, speedFactor: 1.25 };
+    </script>
+
+    <meta charset="UTF-8">
+    <meta property="og:title" content="Andrew BBS {% if page_title %} - {{page_title}} {% endif %}" />
+    <meta property="og:image" content="{{request.scheme}}://{{request.META.HTTP_HOST}}{% static 'img/andrew-bbs-screenshot.png' %}" />
+    <title>Andrew BBS {% if page_title %} - {{page_title}} {% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="{% static 'css/386/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/386/bootstrap-responsive.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="navbar-container">
+            <div class="nav nav-items">
+                <ul class="nav navbar-nav">
+                  <li>
+                      <a href="/">ANDREW BBS</a>
+                  </li>
+                </ul>
+                {% if request.user.is_authenticated %}
+                <ul class="nav navbar-nav pull-right">
+                  <li class="">
+                    <a href="/">{{request.user.handle}}</a>
+                  </li>
+                  <li class="">
+                    <a href="{% url 'member-logout' %}">[Logout]</a>
+                  </li>
+                </ul>
+                {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    
+      <div class="content">
+        <div class="row-fluid">
+          <div class="col span12">
+            <div class="ascii-header">
+              <img class="no-filter" src="{% static 'img/andrew-bbs-grey.png' %}" />
+            </div>
+          </div>
+        </div>
+
+       {% block main %}{% endblock %}
+
+      </div>
+    </div>
+    <script src="{% static 'js/app.js' %}"></script>
+  </body>
+
+</html>

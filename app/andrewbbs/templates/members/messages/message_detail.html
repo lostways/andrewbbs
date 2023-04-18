@@ -1,11 +1,11 @@
-{% extends 'layout/base.html' %}
+{% extends 'layout/messages.html' %}
 {% load markdown_extras %}
 
 {% block content %}
-<h3 class="text-center page-header">{{ message.subject }}</h3>
-<p>{{ message.timestamp }}</p>
-<p>FROM: {{ message.sender.handle }}</p>
-<p>SUBJECT: {{ message.subject }}</p>
-<p>{{ message.body | markdown | safe }}</p>
-<p><a href="{% url 'member-message-list' %}" class="btn">Back to Messages</a></p>
+<div class="black-box message-detail">
+  <p><span class="meta">{{ message.timestamp }}</span></p>
+  <p><span class="meta">FROM:</span> {{ message.sender.handle | safe }}</p>
+  <p><span class="meta">SUBJECT:</span> {{ message.subject | safe }}</p>
+  <p>{{ message.body | markdown | safe }}</p>
+</div>
 {% endblock %}

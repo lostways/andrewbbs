@@ -54,8 +54,8 @@ urlpatterns = [
         name="member-message-detail"
     ),
     path(
-        "members/messages",
-        views.member_message_list,
-        name="member-message-list"
+        "members/messages/inbox",
+        views.member_message_inbox,
+        name="member-message-inbox"
     ),
 ]

@@ -78,6 +78,52 @@ class MessageTestCase(TestCase):
     self.assertEqual(response.context["form"].errors["recipient"][0], "Handle not found")
     self.assertEqual(Message.objects.count(), 0)
   
+  def test_message_inbox_view_unauthenticated(self):
+    response = self.client.get(reverse("member-message-inbox"))
+    self.assertEqual(response.status_code, 302)
+    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-inbox')}")
+  
+  def test_message_inbox_view_get(self):
+    self.client.force_login(self.test_recipient)
+
+    # Create 3 messages, 2 of which are sent to the test recipient
+    # and 1 of which is sent by the test recipient
+
+    message_1 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 1",
+      body="Test Message Body 1"
+    )
+
+    message_2 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 2",
+      body="Test Message Body 2"
+    )
+
+    message_3 = Message.objects.create(
+      sender=self.test_recipient,
+      recipient=self.test_sender,
+      subject="Test Message Subject 3",
+      body="Test Message Body 3"
+    )
+
+    response = self.client.get(reverse("member-message-inbox"))
+
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/message_list.html")
+
+    self.assertEqual(response.context["messages"].count(), 2)
+    self.assertEqual(response.context["messages"][0], message_2)
+    self.assertEqual(response.context["messages"][1], message_1)
+
+    self.assertContains(response, message_1.subject)
+    self.assertContains(response, message_2.subject)
+    self.assertNotContains(response, message_3.subject)
+    self.assertEqual(response.context["page_title"], "Inbox")
+  
   def test_message_sent_view_unauthenticated(self):
     response = self.client.get(reverse("member-message-sent"))
     self.assertEqual(response.status_code, 302)
@@ -112,7 +158,7 @@ class MessageTestCase(TestCase):
 
     response = self.client.get(reverse("member-message-sent"))
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/messages/message_list.html")
+    self.assertTemplateUsed(response, "members/messages/message_sent.html")
     self.assertEqual(response.context["messages"].count(), 2)
     self.assertEqual(response.context["messages"][0], message_2)
     self.assertEqual(response.context["messages"][1], message_1)
@@ -121,6 +167,7 @@ class MessageTestCase(TestCase):
     self.assertContains(response, "Test Message Subject 1")
     self.assertContains(response, "Test Message Subject 2")
     self.assertNotContains(response, "Test Message Subject 3")
+    self.assertEqual(response.context["page_title"], "Sent Messages")
   
   def test_message_detail_view_unauthenticated(self):
     message = Message.objects.create(

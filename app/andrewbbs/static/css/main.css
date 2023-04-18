@@ -39,6 +39,23 @@ body {
     box-shadow: 0 0 0 4px #00aaaa;
 }
 
+.black-box {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    max-width: 23em;
+    padding: 1em;
+    font-size: 18px;
+    line-height: 20px;
+    color: #ffffff;
+    background-color: #000000;
+    border: 4px double #ffffff;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+          border-radius: 0;
+    box-shadow: 0 0 0 4px #000000;
+}
+
 .ascii-art {
     font-family: monospace;
     white-space: pre;
@@ -87,6 +104,11 @@ h3 {
     width: 100%;
 }
 
+.nav-list {
+    margin-top: 0;
+    margin-bottom: 3rem;
+}
+
 /* Forms */
 form legend {
     text-align: center;
@@ -119,4 +141,13 @@ form.member-login {
 
 form.member-message {
     max-width: 80rem; 
+}
+
+/* Messages */
+.message-detail {
+    max-width: 100%;
+}
+
+.message-detail .meta {
+    color: #0aa;
 }

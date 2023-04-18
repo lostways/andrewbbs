@@ -1,0 +1,21 @@
+{% extends 'members/messages/message_list.html' %}
+
+{% block headers %}
+  <th>Subject</th>
+  <th>To</th>
+  <th>Sent</th>
+{% endblock %}
+
+{% block rows %}
+{% for message in messages %}
+    <tr>
+      <td>
+        <a href="{% url 'member-message-detail' message.id %}">
+          {{ message.subject }}
+        </a>
+      </td>
+      <td>{{ message.recipient.handle }}</td>
+      <td>{{ message.timestamp }}</td>
+    </tr>
+{% endfor %}
+{% endblock %}

@@ -108,14 +108,14 @@ def access(request):
     return render(request, 'access.html', context)
 
 @login_required
-def member_message_list(request):
+def member_message_inbox(request):
     """List Messages"""
 
     messages = request.user.received_messages.all()
 
     context = {
         'messages': messages,
-        'page_title': "Messages"
+        'page_title': "Inbox"
     }
     return render(request, 'members/messages/message_list.html', context)
 
@@ -129,7 +129,7 @@ def member_message_sent(request):
         'messages': messages,
         'page_title': "Sent Messages"
     }
-    return render(request, 'members/messages/message_list.html', context)
+    return render(request, 'members/messages/message_sent.html', context)
 
 @login_required
 def member_message_detail(request, pk):

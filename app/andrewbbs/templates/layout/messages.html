@@ -1,0 +1,21 @@
+{% extends 'layout/layout.html' %}
+{% block main %}
+<div class="row">
+  <div class="span3">
+    <ul class="nav nav-list">
+      <li>
+        <a href="{% url 'member-message-inbox' %}">Inbox</a>
+      </li>
+      <li>
+        <a href="{% url 'member-message-sent' %}">Sent</a>
+      </li>
+      <li>
+        <a href="{% url 'member-message-send' %}">Send Message</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col span7">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
