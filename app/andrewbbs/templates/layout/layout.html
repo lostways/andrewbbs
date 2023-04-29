@@ -18,23 +18,26 @@
   </head>
 
   <body>
-    <div class="container-fluid">
+    <div class="container">
       <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="navbar-inner">
           <div class="navbar-container">
             <div class="nav nav-items">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav home-item">
                   <li>
                       <a href="/">ANDREW BBS</a>
                   </li>
                 </ul>
                 {% if request.user.is_authenticated %}
                 <ul class="nav navbar-nav pull-right">
-                  <li class="">
+                  <li class="nav-item">
                     <a href="/">{{request.user.handle}}</a>
                   </li>
-                  <li class="">
-                    <a href="{% url 'member-logout' %}">[Logout]</a>
+                  <li class="nav-item">
+                    <a href="{% url 'member-message-inbox' %}">Messages</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{% url 'member-logout' %}">Logout</a>
                   </li>
                 </ul>
                 {% endif %}
@@ -47,7 +50,9 @@
         <div class="row-fluid">
           <div class="col span12">
             <div class="ascii-header">
-              <img class="no-filter" src="{% static 'img/andrew-bbs-grey.png' %}" />
+              <a href="/">
+                <img class="no-filter" src="{% static 'img/andrew-bbs-grey.png' %}" />
+              </a>
             </div>
           </div>
         </div>

@@ -1,20 +1,23 @@
 {% extends 'layout/layout.html' %}
 {% block main %}
-<div class="row">
+{% url 'member-message-inbox' as inbox_url %}
+{% url 'member-message-sent' as sent_url %}
+{% url 'member-message-send' as send_url %}
+<div class="row-fluid">
   <div class="span3">
-    <ul class="nav nav-list">
-      <li>
-        <a href="{% url 'member-message-inbox' %}">Inbox</a>
+    <ul class="nav nav-list side-bar">
+      <li class="{% if request.path == inbox_url %}active{% endif %}">
+        <a href="{{inbox_url}}">Inbox</a>
       </li>
-      <li>
-        <a href="{% url 'member-message-sent' %}">Sent</a>
+      <li class="{% if request.path == sent_url %}active{% endif %}">
+        <a href="{{sent_url}}">Sent</a>
       </li>
-      <li>
-        <a href="{% url 'member-message-send' %}">Send Message</a>
+      <li class="{% if request.path == send_url %}active{% endif %}">
+        <a href="{{send_url}}">Send Message</a>
       </li>
     </ul>
   </div>
-  <div class="col span7">
+  <div class="col span9">
     {% block content %}{% endblock %}
   </div>
 </div>
