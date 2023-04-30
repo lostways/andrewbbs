@@ -111,19 +111,21 @@ def access(request):
 def member_message_inbox(request):
     """List Messages"""
 
-    messages = request.user.received_messages.all()
+    unread_messages = Message.objects.unread_messages(request.user)
+    read_messages = Message.objects.read_messages(request.user)
 
     context = {
-        'messages': messages,
+        'unread_messages': unread_messages,
+        'read_messages': read_messages,
         'page_title': "Inbox"
     }
-    return render(request, 'members/messages/message_list.html', context)
+    return render(request, 'members/messages/message_inbox.html', context)
 
 @login_required
 def member_message_sent(request):
     """Sent Messages"""
 
-    messages = request.user.sent_messages.all()
+    messages = Message.objects.sent_messages(request.user)
 
     context = {
         'messages': messages,
@@ -136,6 +138,10 @@ def member_message_detail(request, pk):
     """Messages Detail"""
 
     message = get_object_or_404(Message, Q(pk=pk), Q(sender=request.user) | Q(recipient=request.user))
+
+    # mark message as read if recipient is logged in user
+    if message.recipient == request.user:
+        message.mark_read()
 
     context = {
         'message': message,

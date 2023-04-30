@@ -21,7 +21,7 @@ class MessageTestCase(TestCase):
       password="testpassword"
     )
   
-  def test_send_message(self):
+  def test_message_send(self):
     test_message = Message.objects.create(
       sender=self.test_sender,
       recipient=self.test_recipient,
@@ -34,7 +34,7 @@ class MessageTestCase(TestCase):
     self.assertEqual(test_message.body, "Test Message Body")
     self.assertEqual(test_message.subject, "Test Message Subject")
 
-  def test_get_messages(self):
+  def test_messages_get(self):
     test_message_1 = Message.objects.create(
       sender=self.test_sender,
       recipient=self.test_recipient,
@@ -57,7 +57,7 @@ class MessageTestCase(TestCase):
     )
 
     # Get all messages sent to test_recipient
-    recipeient_messages = Message.objects.filter(recipient=self.test_recipient)
+    recipeient_messages = Message.objects.received_messages(self.test_recipient)
 
     # Check that the messages are in the correct order
     self.assertEqual(len(recipeient_messages), 3)
@@ -66,13 +66,122 @@ class MessageTestCase(TestCase):
     self.assertEqual(recipeient_messages[2].body, "Test Message Body 1")
 
     # Get all messages sent by test_sender
-    sender_messages = Message.objects.filter(sender=self.test_sender)
+    sender_messages = Message.objects.sent_messages(self.test_sender)
 
     # Check that the messages are in the correct order
     self.assertEqual(len(sender_messages), 3)
     self.assertEqual(sender_messages[0].body, "Test Message Body 3")
     self.assertEqual(sender_messages[1].body, "Test Message Body 2")
     self.assertEqual(sender_messages[2].body, "Test Message Body 1")
+
+  def test_messages_unread(self):
+    test_message_1 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 1",
+      subject="Test Message Subject 1"
+    )
+
+    test_message_2 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 2",
+      subject="Test Message Subject 2"
+    )
+
+    test_message_3 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 3",
+      subject="Test Message Subject 3"
+    )
+
+    test_message_4 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 4",
+      subject="Test Message Subject 4",
+      read=True
+    )
+
+    test_message_5 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 5",
+      subject="Test Message Subject 4",
+      read=True
+    )
+
+    # Get all messages sent to test_recipient
+    unread_messages = Message.objects.unread_messages(self.test_recipient)
+
+    # Check that the messages are in the correct order
+    self.assertEqual(len(unread_messages), 3)
+    self.assertEqual(unread_messages[0].body, "Test Message Body 3") 
+    self.assertEqual(unread_messages[1].body, "Test Message Body 2")
+    self.assertEqual(unread_messages[2].body, "Test Message Body 1")
+
+  def test_messages_read(self):
+    test_message_1 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 1",
+      subject="Test Message Subject 1"
+    )
+
+    test_message_2 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 2",
+      subject="Test Message Subject 2"
+    )
+
+    test_message_3 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 3",
+      subject="Test Message Subject 3"
+    )
+
+    test_message_4 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 4",
+      subject="Test Message Subject 4",
+      read=True
+    )
+
+    test_message_5 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body 5",
+      subject="Test Message Subject 4",
+      read=True
+    )
+
+    # Get all messages sent to test_recipient
+    read_messages = Message.objects.read_messages(self.test_recipient)
+
+    # Check that the messages are in the correct order
+    self.assertEqual(len(read_messages), 2)
+    self.assertEqual(read_messages[0].body, "Test Message Body 5") 
+    self.assertEqual(read_messages[1].body, "Test Message Body 4")
+  
+def test_message_mark_read(self):
+  test_message_1 = Message.objects.create(
+    sender=self.test_sender,
+    recipient=self.test_recipient,
+    body="Test Message Body 1",
+    subject="Test Message Subject 1"
+  )
+
+  message = Message.objects.get(id=test_message_1.id)
+  self.assertEqual(message.read, False)
+
+  message.mark_read()
+  message = Message.objects.get(id=test_message_1.id)
+  self.assertEqual(message.read, True)
+
 
 
 class MemberTestCase(TestCase):

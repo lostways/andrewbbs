@@ -86,7 +86,7 @@ class MessageTestCase(TestCase):
   def test_message_inbox_view_get(self):
     self.client.force_login(self.test_recipient)
 
-    # Create 3 messages, 2 of which are sent to the test recipient
+    # Create 3 unread messages, 2 of which are sent to the test recipient
     # and 1 of which is sent by the test recipient
 
     message_1 = Message.objects.create(
@@ -110,18 +110,44 @@ class MessageTestCase(TestCase):
       body="Test Message Body 3"
     )
 
+    # Create 2 read messages, both of which are sent to the test recipient
+    message_4 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 4",
+      body="Test Message Body 4",
+      read=True
+    )
+
+    message_5 = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject 5",
+      body="Test Message Body 5",
+      read=True
+    )
+
+
     response = self.client.get(reverse("member-message-inbox"))
 
     self.assertEqual(response.status_code, 200)
-    self.assertTemplateUsed(response, "members/messages/message_list.html")
+    self.assertTemplateUsed(response, "members/messages/message_inbox.html")
 
-    self.assertEqual(response.context["messages"].count(), 2)
-    self.assertEqual(response.context["messages"][0], message_2)
-    self.assertEqual(response.context["messages"][1], message_1)
+    self.assertEqual(response.context["unread_messages"].count(), 2)
+    self.assertEqual(response.context["unread_messages"][0], message_2)
+    self.assertEqual(response.context["unread_messages"][1], message_1)
+
+    self.assertEqual(response.context["read_messages"].count(), 2)
+    self.assertEqual(response.context["read_messages"][0], message_5)
+    self.assertEqual(response.context["read_messages"][1], message_4)
 
     self.assertContains(response, message_1.subject)
     self.assertContains(response, message_2.subject)
+    self.assertContains(response, message_4.subject)
+    self.assertContains(response, message_5.subject)
+    
     self.assertNotContains(response, message_3.subject)
+
     self.assertEqual(response.context["page_title"], "Inbox")
   
   def test_message_sent_view_unauthenticated(self):
@@ -181,7 +207,7 @@ class MessageTestCase(TestCase):
     self.assertEqual(response.status_code, 302)
     self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-detail', kwargs={'pk': message.pk})}")
   
-  def test_message_detail_view_get(self):
+  def test_message_detail_view_get_sender(self):
     self.client.force_login(self.test_sender)
 
     message = Message.objects.create(
@@ -192,6 +218,33 @@ class MessageTestCase(TestCase):
     )
 
     response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+
+    # message should not be marked as read
+    message = Message.objects.get(pk=message.pk)
+    self.assertFalse(message.read)
+
+
+    self.assertEqual(response.status_code, 200)
+    self.assertTemplateUsed(response, "members/messages/message_detail.html")
+    self.assertEqual(response.context["message"], message)
+
+  def test_message_detail_view_get_recipeint(self):
+    self.client.force_login(self.test_recipient)
+
+    message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      subject="Test Message Subject",
+      body="Test Message Body"
+    )
+
+    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+
+    # message should be marked as read
+    message = Message.objects.get(pk=message.pk)
+    self.assertTrue(message.read)
+
+
     self.assertEqual(response.status_code, 200)
     self.assertTemplateUsed(response, "members/messages/message_detail.html")
     self.assertEqual(response.context["message"], message)

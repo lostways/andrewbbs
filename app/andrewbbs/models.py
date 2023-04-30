@@ -114,6 +114,19 @@ class Member(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.handle
 
+class MessageManager(models.Manager):
+    def sent_messages(self, user):
+        return super().get_queryset().filter(sender=user)
+
+    def received_messages(self, user):
+        return super().get_queryset().filter(recipient=user)
+
+    def unread_messages(self, user):
+        return super().get_queryset().filter(recipient=user, read=False)
+
+    def read_messages(self, user):
+        return super().get_queryset().filter(recipient=user, read=True)
+
 class Message(models.Model):
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_messages')
     recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='received_messages')
@@ -122,6 +135,12 @@ class Message(models.Model):
     subject = models.CharField(max_length=300, blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    objects = MessageManager()
+
+    def mark_read(self):
+        self.read = True
+        self.save()
+    
     def get_absolute_url(self):
         return reverse('member-message-detail', args=[str(self.id)])
 

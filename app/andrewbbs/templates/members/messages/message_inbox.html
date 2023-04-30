@@ -1,0 +1,34 @@
+{% extends 'members/messages/message_list.html' %}
+
+{% block rows %}
+  {% if unread_messages or read_messages %}
+    {% if unread_messages %}
+      {% for message in unread_messages %}
+        <tr>
+          <td>
+            <a href="{% url 'member-message-detail' message.id %}">
+              {{ message.subject }}
+            </a>
+          </td>
+          <td>{{ message.sender.handle }}</td>
+          <td>{{ message.timestamp }}</td>
+        </tr>
+      {% endfor %}
+    {% endif %}
+    {% if read_messages %}
+      {% for message in read_messages %}
+        <tr>
+          <td>
+            <a class="message-read" href="{% url 'member-message-detail' message.id %}">
+              {{ message.subject }}
+            </a>
+          </td>
+          <td>{{ message.sender.handle }}</td>
+          <td>{{ message.timestamp }}</td>
+        </tr>
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    <p class="text-center">No unread to display.</p>
+  {% endif %}
+{% endblock %}

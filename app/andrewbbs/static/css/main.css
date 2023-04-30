@@ -191,3 +191,7 @@ form.member-message {
 .message-detail .meta {
     color: #0aa;
 }
+
+.message-read {
+    color: #bbb;
+}

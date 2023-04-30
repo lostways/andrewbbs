@@ -2,7 +2,6 @@
 
 {% block content %}
 <h3 class="text-center">{{ page_title }}</h3>
-{% if messages %}
   <table class=table>
     <thead>
     {% block headers %}
@@ -13,21 +12,22 @@
     </thead>
     <tbody>
     {% block rows %}
-    {% for message in messages %}
-      <tr>
-        <td>
-          <a href="{% url 'member-message-detail' message.id %}">
-            {{ message.subject }}
-          </a>
-        </td>
-        <td>{{ message.sender.handle }}</td>
-        <td>{{ message.timestamp }}</td>
-      </tr>
-    {% endfor %}
+      {% if messages %}
+        {% for message in messages %}
+          <tr>
+            <td>
+              <a href="{% url 'member-message-detail' message.id %}">
+                {{ message.subject }}
+              </a>
+            </td>
+            <td>{{ message.sender.handle }}</td>
+            <td>{{ message.timestamp }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <p class="text-center">No messages to display.</p>
+      {% endif %}
     {% endblock %}
     </tbody>
   </table>
-{% else %}
-  <p class="text-center">No messages to display.</p>
-{% endif %}
 {% endblock %}
