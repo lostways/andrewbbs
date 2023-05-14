@@ -64,5 +64,4 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
     - Add admin send to all feature
     - convert message ids to UUIDS
     - add reply to message feature
-    - Convert sent times to PST
   - Alerts for new joins

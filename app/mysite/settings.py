@@ -150,7 +150,7 @@ AUTH_USER_MODEL = 'andrewbbs.Member'
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Los_Angeles'
 
 USE_I18N = True
 
