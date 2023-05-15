@@ -62,6 +62,5 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
     - link to markdown intruction on send form
     - Mesage notifications
     - Add admin send to all feature
-    - convert message ids to UUIDS
     - add reply to message feature
   - Alerts for new joins
