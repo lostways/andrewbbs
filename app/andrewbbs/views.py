@@ -134,10 +134,10 @@ def member_message_sent(request):
     return render(request, 'members/messages/message_sent.html', context)
 
 @login_required
-def member_message_detail(request, pk):
+def member_message_detail(request, uuid):
     """Messages Detail"""
 
-    message = get_object_or_404(Message, Q(pk=pk), Q(sender=request.user) | Q(recipient=request.user))
+    message = get_object_or_404(Message, Q(uuid=uuid), Q(sender=request.user) | Q(recipient=request.user))
 
     # mark message as read if recipient is logged in user
     if message.recipient == request.user:

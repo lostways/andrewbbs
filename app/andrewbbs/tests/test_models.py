@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 from ..models import AccessCode
 from ..models import Screen
 from ..models import Member
@@ -21,6 +22,18 @@ class MessageTestCase(TestCase):
       password="testpassword"
     )
   
+  def test_message_UUID(self):
+    test_message = Message.objects.create(
+      sender=self.test_sender,
+      recipient=self.test_recipient,
+      body="Test Message Body",
+      subject="Test Message Subject"
+    )
+
+    self.assertTrue(test_message.uuid)
+    url = reverse('member-message-detail', args=[test_message.uuid])
+    self.assertEqual(test_message.get_absolute_url(), url)
+
   def test_message_send(self):
     test_message = Message.objects.create(
       sender=self.test_sender,

@@ -6,7 +6,7 @@
       {% for message in unread_messages %}
         <tr>
           <td>
-            <a href="{% url 'member-message-detail' message.id %}">
+            <a href="{% url 'member-message-detail' message.uuid %}">
               {{ message.subject }}
             </a>
           </td>
@@ -19,7 +19,7 @@
       {% for message in read_messages %}
         <tr>
           <td>
-            <a class="message-read" href="{% url 'member-message-detail' message.id %}">
+            <a class="message-read" href="{% url 'member-message-detail' message.uuid %}">
               {{ message.subject }}
             </a>
           </td>

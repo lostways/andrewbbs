@@ -16,7 +16,7 @@
         {% for message in messages %}
           <tr>
             <td>
-              <a href="{% url 'member-message-detail' message.id %}">
+              <a href="{% url 'member-message-detail' message.uuid %}">
                 {{ message.subject }}
               </a>
             </td>

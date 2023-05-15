@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager, PermissionsMixin
@@ -134,6 +135,7 @@ class Message(models.Model):
     read = models.BooleanField(default=False)
     subject = models.CharField(max_length=300, blank=False)
     timestamp = models.DateTimeField(auto_now_add=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     objects = MessageManager()
 
@@ -142,7 +144,7 @@ class Message(models.Model):
         self.save()
     
     def get_absolute_url(self):
-        return reverse('member-message-detail', args=[str(self.id)])
+        return reverse('member-message-detail', args=[str(self.uuid)])
 
     class Meta:
         ordering = ['-timestamp']

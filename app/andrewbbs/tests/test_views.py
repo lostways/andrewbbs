@@ -203,9 +203,9 @@ class MessageTestCase(TestCase):
       body="Test Message Body"
     )
 
-    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    response = self.client.get(reverse("member-message-detail", kwargs={"uuid": message.uuid}))
     self.assertEqual(response.status_code, 302)
-    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-detail', kwargs={'pk': message.pk})}")
+    self.assertEqual(response.url, f"{settings.LOGIN_URL}?next={reverse('member-message-detail', kwargs={'uuid': message.uuid})}")
   
   def test_message_detail_view_get_sender(self):
     self.client.force_login(self.test_sender)
@@ -217,7 +217,7 @@ class MessageTestCase(TestCase):
       body="Test Message Body"
     )
 
-    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    response = self.client.get(reverse("member-message-detail", kwargs={"uuid": message.uuid}))
 
     # message should not be marked as read
     message = Message.objects.get(pk=message.pk)
@@ -238,7 +238,7 @@ class MessageTestCase(TestCase):
       body="Test Message Body"
     )
 
-    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    response = self.client.get(reverse("member-message-detail", kwargs={"uuid": message.uuid}))
 
     # message should be marked as read
     message = Message.objects.get(pk=message.pk)
@@ -265,7 +265,7 @@ class MessageTestCase(TestCase):
       body="Test Message Body"
     )
 
-    response = self.client.get(reverse("member-message-detail", kwargs={"pk": message.pk}))
+    response = self.client.get(reverse("member-message-detail", kwargs={"uuid": message.uuid}))
     self.assertEqual(response.status_code, 404)
 
 class ScreenTestCase(TestCase):

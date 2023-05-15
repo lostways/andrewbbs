@@ -49,7 +49,7 @@ urlpatterns = [
         name="member-message-sent"
     ),
     path(
-        "members/messages/<int:pk>",
+        "members/messages/<uuid:uuid>",
         views.member_message_detail,
         name="member-message-detail"
     ),
