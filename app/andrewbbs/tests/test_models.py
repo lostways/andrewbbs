@@ -125,6 +125,15 @@ class MessageTestCase(TestCase):
       read=True
     )
 
+
+    # Get count of unread messages
+    unread_count = Message.objects.unread_messages_count(self.test_recipient)
+    self.assertEqual(unread_count, 3)
+
+    # Does recipient have unread messages?
+    has_unread = self.test_recipient.has_unread_messages()
+    self.assertTrue(has_unread)
+
     # Get all messages sent to test_recipient
     unread_messages = Message.objects.unread_messages(self.test_recipient)
 

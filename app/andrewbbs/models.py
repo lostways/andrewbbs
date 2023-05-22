@@ -109,6 +109,9 @@ class Member(AbstractBaseUser, PermissionsMixin):
 
     objects = MemberManager()
 
+    def has_unread_messages(self):
+        return Message.objects.unread_messages_count(self) > 0
+
     class Meta:
         ordering = ['handle']
 
@@ -127,6 +130,11 @@ class MessageManager(models.Manager):
 
     def read_messages(self, user):
         return super().get_queryset().filter(recipient=user, read=True)
+    
+    def unread_messages_count(self, user):
+        return super().get_queryset().filter(recipient=user, read=False).count()
+         
+
 
 class Message(models.Model):
     sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sent_messages')

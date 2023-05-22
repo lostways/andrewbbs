@@ -30,15 +30,15 @@
                 </ul>
                 {% if request.user.is_authenticated %}
                 <ul class="nav navbar-nav pull-right">
+                  <li class="divider-vertical"></li>
                   <li class="nav-item">
-                    <a href="/">{{request.user.handle}}</a>
+                    <a class="{% if request.user.has_unread_messages %}attention{% endif %}" href="{% url 'member-message-inbox' %}">Messages</a>
                   </li>
-                  <li class="nav-item">
-                    <a href="{% url 'member-message-inbox' %}">Messages</a>
-                  </li>
+                  <li class="divider-vertical"></li>
                   <li class="nav-item">
                     <a href="{% url 'member-logout' %}">Logout</a>
                   </li>
+                  <li class="divider-vertical"></li>
                 </ul>
                 {% endif %}
             </div>
@@ -47,6 +47,11 @@
       </div>
     
       <div class="content">
+        <div class="row-fluid user-welcome">
+          {% if request.user.is_authenticated %}
+            <span class="pull-right user-welcome-text">Welcome, {{request.user.handle}}!</span>
+          {% endif %}
+        </div>
         <div class="row-fluid">
           <div class="col span12">
             <div class="ascii-header">

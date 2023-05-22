@@ -1,3 +1,10 @@
+:root {
+  --color-pink: #fe54fe;
+  --color-blue: #000084;
+  --color-green: #00aaaa;
+  --color-red: #ff0000;
+}
+
 body { 
   visibility: hidden;
   padding: 0px;
@@ -124,16 +131,16 @@ h3 {
 }
 
 .navbar .nav>li>a {
-    padding: 1px 0px;
+    padding: 0px 10px;
     cursor: pointer;
 }
 
-li.nav-item>a::before {
-    content: "[";
+.navbar .nav>li>a.attention  {
+  font-style: italic;
 }
 
-li.nav-item>a::after {
-    content: "]";
+.navbar .divider-vertical {
+  margin: 0px;
 }
 
 .nav-items {
@@ -144,6 +151,7 @@ li.nav-item>a::after {
     margin-top: 0;
     margin-bottom: 3rem;
 }
+
 
 .side-bar {
     margin-bottom: 2em;
@@ -183,6 +191,7 @@ form.member-message {
     max-width: 80rem; 
 }
 
+
 /* Messages */
 .message-detail {
     max-width: 100%;
@@ -195,3 +204,4 @@ form.member-message {
 .message-read {
     color: #bbb;
 }
+
