@@ -25,11 +25,12 @@ DEBUG = os.environ['DEBUG'].lower() == 'true'
 ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 STATIC_ROOT = os.environ.get('STATIC_ROOT', BASE_DIR / 'andrewbbs' / 'static')
 
-# OTP Settings
-OTP_PROVIDER = os.environ.get('OTP_PROVIDER', 'local')
-OTP_ACCOUNT_SID = os.environ.get('OTP_ACCOUNT_SID', '')
-OTP_AUTH_TOKEN = os.environ.get('OTP_AUTH_TOKEN', '')
+# Twilio Settings
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
+NOTIFY_SERVICE_ID = os.environ.get('NOTIFY_SERVICE_ID', '')
 OTP_SERVICE_ID = os.environ.get('OTP_SERVICE_ID', '')
+OTP_PROVIDER = os.environ.get('OTP_PROVIDER', 'local')
 
 # SSL Settings
 if os.environ.get('USE_SSL', 'false').lower() == 'true':

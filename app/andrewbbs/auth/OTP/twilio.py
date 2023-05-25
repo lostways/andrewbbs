@@ -2,7 +2,7 @@ from django.conf import settings
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
 
-client = Client(settings.OTP_ACCOUNT_SID, settings.OTP_AUTH_TOKEN)
+client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 service = client.verify.services(settings.OTP_SERVICE_ID)
 
 class OTP:
