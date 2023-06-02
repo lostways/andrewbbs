@@ -13,7 +13,7 @@ from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
 from .forms import MessageForm
-from .auth.verify import get_otp_provider
+from .SMS.provider import get_sms_provider
 
 User = get_user_model()
 
@@ -165,6 +165,10 @@ def member_message_send(request):
             subject=form.cleaned_data['subject']
         )
         message.save()
+
+        sms = get_sms_provider()
+        sms.send_sms(recipient.phone.as_e164, f"Andrew BBS: New msg from {request.user.handle}!")
+
         return redirect('member-message-sent')
 
     context = {
@@ -215,8 +219,8 @@ def member_login(request):
         handle = form.cleaned_data.get('handle')
         try:
             member = Member.objects.get(handle=handle)
-            OTP = get_otp_provider()
-            OTP.send_code(member.phone.as_e164)
+            OTP = get_sms_provider()
+            OTP.otp_send_code(member.phone.as_e164)
             return redirect("/members/otp/{}".format(member.pk))
         except Member.DoesNotExist:
             messages.error(request, "Handle not found")
@@ -237,8 +241,8 @@ def member_login_verify(request, pk):
     if form.is_valid():
         code = form.cleaned_data.get('code')
         member = Member.objects.get(pk=pk)
-        OTP = get_otp_provider()
-        otp_status = OTP.verify_code(member.phone.as_e164, code)
+        OTP = get_sms_provider()
+        otp_status = OTP.otp_verify_code(member.phone.as_e164, code)
         if otp_status == "approved":
             valid = "True"
             user = authenticate(request, handle=member.handle)

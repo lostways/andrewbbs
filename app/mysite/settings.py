@@ -30,7 +30,7 @@ TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
 TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
 NOTIFY_SERVICE_ID = os.environ.get('NOTIFY_SERVICE_ID', '')
 OTP_SERVICE_ID = os.environ.get('OTP_SERVICE_ID', '')
-OTP_PROVIDER = os.environ.get('OTP_PROVIDER', 'local')
+SMS_PROVIDER = os.environ.get('SMS_PROVIDER', 'local')
 
 # SSL Settings
 if os.environ.get('USE_SSL', 'false').lower() == 'true':
