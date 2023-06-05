@@ -38,6 +38,11 @@ To run a django mangement command use `make manage`. For example:
 make manage shell
 ```
 
+To format your code with `black`:
+```
+make format
+```
+
 ## OTP Login
 The app is able to use the Twilio api to do OTP login. See [Twilio Verification API](https://www.twilio.com/docs/verify/api) for more details. 
 
@@ -55,11 +60,12 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - add continuous deployment via workflows
   - move certs to volumes
   - Reduce size of django image?
+  - run tests in github workflow
 - App
   - Add view and edit member details
   - Add view member list
-  - Add message system
-    - Mesage notifications
+  - Message system
     - Add admin send to all feature
-    - add reply to message feature
+    - Add reply to message feature
+    - Message pagination
   - Alerts for new joins
