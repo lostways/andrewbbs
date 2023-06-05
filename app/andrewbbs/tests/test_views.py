@@ -55,8 +55,8 @@ class MessageTestCase(TestCase):
                 },
             )
             mock_send_sms.assert_called_once_with(
-                self.test_recipient.phone.as_e164, 
-                f"Andrew BBS: New msg from {self.test_sender.handle}!"
+                self.test_recipient.phone.as_e164,
+                f"Andrew BBS: New msg from {self.test_sender.handle}!",
             )
 
             # print(response.content)

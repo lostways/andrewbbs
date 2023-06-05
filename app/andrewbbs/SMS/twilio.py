@@ -26,7 +26,9 @@ class SMS:
     def send_sms(receiver, message):
         try:
             response = client.messages.create(
-                body=message, messaging_service_sid=settings.NOTIFY_SERVICE_ID, to=receiver
+                body=message,
+                messaging_service_sid=settings.NOTIFY_SERVICE_ID,
+                to=receiver,
             )
         except TwilioRestException as e:
             logger.error(f"Could Not Send SMS to {receiver}: {e}")
