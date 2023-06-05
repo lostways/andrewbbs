@@ -41,24 +41,33 @@ class MessageTestCase(TestCase):
     def test_send_message_view_post(self):
         self.client.force_login(self.test_sender)
 
-        response = self.client.post(
-            reverse("member-message-send"),
-            {
-                "recipient": self.test_recipient.handle,
-                "subject": "Test Message Subject",
-                "body": "Test Message Body",
-            },
-        )
+        # Test with twilio provider
+        settings.SMS_PROVIDER = "twilio"
 
-        # print(response.content)
-        self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse("member-message-sent"))
+        with mock.patch("andrewbbs.SMS.twilio.SMS.send_sms") as mock_send_sms:
+            mock_send_sms.return_value = True
+            response = self.client.post(
+                reverse("member-message-send"),
+                {
+                    "recipient": self.test_recipient.handle,
+                    "subject": "Test Message Subject",
+                    "body": "Test Message Body",
+                },
+            )
+            mock_send_sms.assert_called_once_with(
+                self.test_recipient.phone.as_e164, 
+                f"Andrew BBS: New msg from {self.test_sender.handle}!"
+            )
 
-        self.assertEqual(Message.objects.count(), 1)
-        self.assertEqual(Message.objects.first().sender, self.test_sender)
-        self.assertEqual(Message.objects.first().recipient, self.test_recipient)
-        self.assertEqual(Message.objects.first().subject, "Test Message Subject")
-        self.assertEqual(Message.objects.first().body, "Test Message Body")
+            # print(response.content)
+            self.assertEqual(response.status_code, 302)
+            self.assertRedirects(response, reverse("member-message-sent"))
+
+            self.assertEqual(Message.objects.count(), 1)
+            self.assertEqual(Message.objects.first().sender, self.test_sender)
+            self.assertEqual(Message.objects.first().recipient, self.test_recipient)
+            self.assertEqual(Message.objects.first().subject, "Test Message Subject")
+            self.assertEqual(Message.objects.first().body, "Test Message Body")
 
     def test_send_message_view_invalid_recipient(self):
         self.client.force_login(self.test_sender)
@@ -599,10 +608,10 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.OTP_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "twilio"
 
         # Mock the send_code method on the twilio provider
-        with mock.patch("andrewbbs.auth.OTP.twilio.OTP.send_code") as mock_send_code:
+        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_send_code") as mock_send_code:
             mock_send_code.return_value = True
             response = self.client.post(reverse("member-login"), data)
             mock_send_code.assert_called_once_with("+12345678901")
@@ -631,11 +640,9 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.OTP_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "twilio"
 
-        with mock.patch(
-            "andrewbbs.auth.OTP.twilio.OTP.verify_code"
-        ) as mock_verify_code:
+        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_verify_code") as mock_verify_code:
             mock_verify_code.return_value = "approved"
             response = self.client.post(
                 reverse("member-login-verify", kwargs={"pk": testuser_id}), data
@@ -653,11 +660,9 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.OTP_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "twilio"
 
-        with mock.patch(
-            "andrewbbs.auth.OTP.twilio.OTP.verify_code"
-        ) as mock_verify_code:
+        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_verify_code") as mock_verify_code:
             mock_verify_code.return_value = False
             response = self.client.post(
                 reverse("member-login-verify", kwargs={"pk": testuser_id}), data

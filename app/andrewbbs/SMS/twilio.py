@@ -1,6 +1,9 @@
+import logging
 from django.conf import settings
 from twilio.rest import Client
 from twilio.base.exceptions import TwilioRestException
+
+logger = logging.getLogger(__name__)
 
 client = Client(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
 service = client.verify.services(settings.OTP_SERVICE_ID)
@@ -21,7 +24,11 @@ class SMS:
         return verification_check.status
 
     def send_sms(receiver, message):
-        response = client.messages.create(
-            body=message, messaging_service_sid=settings.NOTIFY_SERVICE_ID, to=receiver
-        )
+        try:
+            response = client.messages.create(
+                body=message, messaging_service_sid=settings.NOTIFY_SERVICE_ID, to=receiver
+            )
+        except TwilioRestException as e:
+            logger.error(f"Could Not Send SMS to {receiver}: {e}")
+            return False
         return response
