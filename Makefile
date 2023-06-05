@@ -28,3 +28,6 @@ test:
 manage:
 	@echo "==> Executing manage.py $(c) in Andrew BBS"
 	docker-compose exec app python manage.py $(filter-out $@,$(MAKECMDGOALS))
+format:
+	@echo "==> Formatting Andrew BBS code with black"
+	docker-compose exec app black . --exclude /andrewbbs/migrations/
