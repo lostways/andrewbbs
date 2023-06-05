@@ -18,12 +18,12 @@ class SMSTestCase(TestCase):
 
     def test_local_otp_send_code(self):
         otp_provider = LOCAL_SMS
-        otp_provider.send_code("1234567890")
+        otp_provider.otp_send_code("1234567890")
         self.assertNotEqual(otp_provider.CODE, "")
 
     def test_local_otp_verify_code(self):
         otp_provider = LOCAL_SMS
-        otp_provider.send_code("1234567890")
+        otp_provider.otp_send_code("1234567890")
 
         otp_status = otp_provider.verify_code("1234567890", "1234567")
         self.assertEqual(otp_status, "pending")
