@@ -17,32 +17,35 @@ from .SMS.provider import get_sms_provider
 
 User = get_user_model()
 
+
 # Create your views here.
 def index(request):
     """Screen List"""
 
     # Unlocked codes set by AccessCodeMiddleware
     codes = request.unlocked_codes
-    
+
     if codes:
-        screens = Screen.objects.filter(
-            codes__code__in=codes,
-        ).distinct().order_by("-updated_at")
+        screens = (
+            Screen.objects.filter(
+                codes__code__in=codes,
+            )
+            .distinct()
+            .order_by("-updated_at")
+        )
 
         if screens:
             screen_ids = [screen.pk for screen in screens]
-            unlocked_screens = request.session.get('screens', [])
+            unlocked_screens = request.session.get("screens", [])
             for screen_id in screen_ids:
                 unlocked_screens.append(screen_id)
-            request.session['screens'] = list(set(unlocked_screens))
+            request.session["screens"] = list(set(unlocked_screens))
 
-        context = {
-            'screen_list': screens,
-            'page_title': "Screens"
-        }
-        return render(request, 'screens/screen_list.html', context)
+        context = {"screen_list": screens, "page_title": "Screens"}
+        return render(request, "screens/screen_list.html", context)
 
     return access(request)
+
 
 def detail(request, slug):
     """Screen Detail"""
@@ -57,11 +60,9 @@ def detail(request, slug):
         # if no codes return 404
         raise Http404("No codes unlocked")
 
-    context = {
-        'screen': screen,
-        'page_title': screen.title
-    }
-    return render(request, 'screens/screen_detail.html', context)
+    context = {"screen": screen, "page_title": screen.title}
+    return render(request, "screens/screen_detail.html", context)
+
 
 def access(request):
     """Enter Access Code"""
@@ -72,13 +73,10 @@ def access(request):
     form = AccessCodeForm(request.POST or None)
 
     if form.is_valid():
-        entered_code = form.cleaned_data['code']
+        entered_code = form.cleaned_data["code"]
 
         try:
-            valid_code = AccessCode.objects.get(
-                code=entered_code,
-                enabled=True
-            )
+            valid_code = AccessCode.objects.get(code=entered_code, enabled=True)
         except AccessCode.DoesNotExist:
             valid_code = None
 
@@ -87,25 +85,23 @@ def access(request):
             if entered_code not in codes:
                 codes.append(entered_code)
 
-            #print (f"code: {entered_code} is valid")
+            # print (f"code: {entered_code} is valid")
 
-            #if user is logged in, add code to unlocked_codes
+            # if user is logged in, add code to unlocked_codes
             if request.user.is_authenticated:
                 member = Member.objects.get(handle=request.user.handle)
                 member.unlocked_codes = codes
                 member.save()
             else:
-                request.session['codes'] = codes
+                request.session["codes"] = codes
 
             return redirect("screen-list")
         else:
             messages.error(request, "Invalid Code")
 
-    context = {
-        'form':form,
-        'page_title': "Enter Access Code"
-    }
-    return render(request, 'access.html', context)
+    context = {"form": form, "page_title": "Enter Access Code"}
+    return render(request, "access.html", context)
+
 
 @login_required
 def member_message_inbox(request):
@@ -115,11 +111,12 @@ def member_message_inbox(request):
     read_messages = Message.objects.read_messages(request.user)
 
     context = {
-        'unread_messages': unread_messages,
-        'read_messages': read_messages,
-        'page_title': "Inbox"
+        "unread_messages": unread_messages,
+        "read_messages": read_messages,
+        "page_title": "Inbox",
     }
-    return render(request, 'members/messages/message_inbox.html', context)
+    return render(request, "members/messages/message_inbox.html", context)
+
 
 @login_required
 def member_message_sent(request):
@@ -127,27 +124,25 @@ def member_message_sent(request):
 
     messages = Message.objects.sent_messages(request.user)
 
-    context = {
-        'messages': messages,
-        'page_title': "Sent Messages"
-    }
-    return render(request, 'members/messages/message_sent.html', context)
+    context = {"messages": messages, "page_title": "Sent Messages"}
+    return render(request, "members/messages/message_sent.html", context)
+
 
 @login_required
 def member_message_detail(request, uuid):
     """Messages Detail"""
 
-    message = get_object_or_404(Message, Q(uuid=uuid), Q(sender=request.user) | Q(recipient=request.user))
+    message = get_object_or_404(
+        Message, Q(uuid=uuid), Q(sender=request.user) | Q(recipient=request.user)
+    )
 
     # mark message as read if recipient is logged in user
     if message.recipient == request.user:
         message.mark_read()
 
-    context = {
-        'message': message,
-        'page_title': "Message Detail - " + message.subject
-    }
-    return render(request, 'members/messages/message_detail.html', context)
+    context = {"message": message, "page_title": "Message Detail - " + message.subject}
+    return render(request, "members/messages/message_detail.html", context)
+
 
 @login_required
 def member_message_send(request):
@@ -157,25 +152,25 @@ def member_message_send(request):
 
     if form.is_valid():
         sender = request.user
-        recipient = Member.objects.get(handle=form.cleaned_data['recipient'])
+        recipient = Member.objects.get(handle=form.cleaned_data["recipient"])
         message = Message(
             sender=sender,
             recipient=recipient,
-            body=form.cleaned_data['body'],
-            subject=form.cleaned_data['subject']
+            body=form.cleaned_data["body"],
+            subject=form.cleaned_data["subject"],
         )
         message.save()
 
         sms = get_sms_provider()
-        sms.send_sms(recipient.phone.as_e164, f"Andrew BBS: New msg from {request.user.handle}!")
+        sms.send_sms(
+            recipient.phone.as_e164, f"Andrew BBS: New msg from {request.user.handle}!"
+        )
 
-        return redirect('member-message-sent')
+        return redirect("member-message-sent")
 
-    context = {
-        'form':form,
-        'page_title': "Enter Message"
-    }
-    return render(request, 'members/messages/message_send.html', context)
+    context = {"form": form, "page_title": "Enter Message"}
+    return render(request, "members/messages/message_send.html", context)
+
 
 def member_register(request):
     """Register as a member"""
@@ -193,22 +188,17 @@ def member_register(request):
         member.set_unusable_password()
 
         # add codes in session to unclocked_codes
-        member.unlocked_codes = request.session.get('codes', [])
-        
+        member.unlocked_codes = request.session.get("codes", [])
+
         # save member
         member.save()
 
-        context = {
-            'member': member,
-            'page_title': 'Login as a Member'
-        }
-        return redirect('member-login')
+        context = {"member": member, "page_title": "Login as a Member"}
+        return redirect("member-login")
 
-    context = {
-        'form':form,
-        'page_title': "Register as a Member"
-    }
-    return render(request, 'members/register.html', context)
+    context = {"form": form, "page_title": "Register as a Member"}
+    return render(request, "members/register.html", context)
+
 
 def member_login(request):
     """Login as a member"""
@@ -216,7 +206,7 @@ def member_login(request):
     form = LoginForm(request.POST or None)
 
     if form.is_valid():
-        handle = form.cleaned_data.get('handle')
+        handle = form.cleaned_data.get("handle")
         try:
             member = Member.objects.get(handle=handle)
             OTP = get_sms_provider()
@@ -225,11 +215,9 @@ def member_login(request):
         except Member.DoesNotExist:
             messages.error(request, "Handle not found")
 
-    context = {
-        'form':form,
-        'page_title': "Login as a Member"
-    }
-    return render(request, 'members/login.html', context)
+    context = {"form": form, "page_title": "Login as a Member"}
+    return render(request, "members/login.html", context)
+
 
 def member_login_verify(request, pk):
     """Request OTP"""
@@ -239,7 +227,7 @@ def member_login_verify(request, pk):
     form = OTPForm(request.POST or None)
 
     if form.is_valid():
-        code = form.cleaned_data.get('code')
+        code = form.cleaned_data.get("code")
         member = Member.objects.get(pk=pk)
         OTP = get_sms_provider()
         otp_status = OTP.otp_verify_code(member.phone.as_e164, code)
@@ -247,7 +235,9 @@ def member_login_verify(request, pk):
             valid = "True"
             user = authenticate(request, handle=member.handle)
             if user is not None:
-                login(request, user, backend='andrewbbs.auth.member_backend.MemberBackend')
+                login(
+                    request, user, backend="andrewbbs.auth.member_backend.MemberBackend"
+                )
                 return redirect("/")
             else:
                 messages.error(request, "Invalid code")
@@ -256,13 +246,14 @@ def member_login_verify(request, pk):
             messages.error(request, "Invalid code")
 
     context = {
-        'form':form,
-        'valid': valid,
-        'pk': pk,
-        'page_title': "Enter Authentication Code"
+        "form": form,
+        "valid": valid,
+        "pk": pk,
+        "page_title": "Enter Authentication Code",
     }
 
-    return render(request, 'members/verify.html', context)
+    return render(request, "members/verify.html", context)
+
 
 def member_logout(request):
     """Logout Member"""
