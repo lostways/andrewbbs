@@ -15,7 +15,7 @@ Docker is the prefered way to run a local development environment. Everything is
 
 Copy the local .env.example to .env and fill in the correct vars for your setup
 ```
-cp ./.envs/local/.env.example ./envs/local/.env
+cp ./.envs/local/.env.example ./.envs/local/.env
 ```
 
 To build the image, make and run migrations, and run the dev server, use:
@@ -44,9 +44,14 @@ make format
 ```
 
 ## OTP Login
-The app is able to use the Twilio api to do OTP login. See [Twilio Verification API](https://www.twilio.com/docs/verify/api) for more details. 
+The app is able to use the Twilio api to do OTP login via SMS. See [Twilio Verification API](https://www.twilio.com/docs/verify/api) for more details. 
 
-For development there is a local OTP provider that doesn't depend on Twilio. To use it set `OTP_PROVIER` to `local`. The correct auth code is sent to the logs. Use it to login.
+For development there is a local SMS provider that doesn't depend on Twilio. To use it set `SMS_PROVIER` to `local`. The correct auth code is sent to the logs. Use it to login.
+
+## SMS Notifications
+Notifications for new messages are sent via SMS using Twilio. See [Twilio SMS API](https://www.twilio.com/docs/sms/send-messages) for more details.
+
+For development use the local SMS provider by setting `SMS_PROVIER` to `local`.
 
 ## Database
 A Postgress DB should be running on `localhost:5432`. 
