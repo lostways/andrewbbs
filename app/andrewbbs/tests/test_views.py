@@ -42,9 +42,9 @@ class MessageTestCase(TestCase):
         self.client.force_login(self.test_sender)
 
         # Test with twilio provider
-        settings.SMS_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "local"
 
-        with mock.patch("andrewbbs.SMS.twilio.SMS.send_sms") as mock_send_sms:
+        with mock.patch("andrewbbs.SMS.local.SMS.send_sms") as mock_send_sms:
             mock_send_sms.return_value = True
             response = self.client.post(
                 reverse("member-message-send"),
@@ -608,10 +608,10 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.SMS_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "local"
 
         # Mock the send_code method on the twilio provider
-        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_send_code") as mock_send_code:
+        with mock.patch("andrewbbs.SMS.local.SMS.otp_send_code") as mock_send_code:
             mock_send_code.return_value = True
             response = self.client.post(reverse("member-login"), data)
             mock_send_code.assert_called_once_with("+12345678901")
@@ -640,9 +640,9 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.SMS_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "local"
 
-        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_verify_code") as mock_verify_code:
+        with mock.patch("andrewbbs.SMS.local.SMS.otp_verify_code") as mock_verify_code:
             mock_verify_code.return_value = "approved"
             response = self.client.post(
                 reverse("member-login-verify", kwargs={"pk": testuser_id}), data
@@ -660,9 +660,9 @@ class MemberTestCase(TestCase):
         testuser_id = self.member_1.id
 
         # Test with twilio provider
-        settings.SMS_PROVIDER = "twilio"
+        settings.SMS_PROVIDER = "local"
 
-        with mock.patch("andrewbbs.SMS.twilio.SMS.otp_verify_code") as mock_verify_code:
+        with mock.patch("andrewbbs.SMS.local.SMS.otp_verify_code") as mock_verify_code:
             mock_verify_code.return_value = False
             response = self.client.post(
                 reverse("member-login-verify", kwargs={"pk": testuser_id}), data
