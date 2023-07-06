@@ -1,0 +1,33 @@
+{% extends 'layout/messages.html' %}
+
+{% block content %}
+<h3 class="text-center">{{ page_title }}</h3>
+  <table class=table>
+    <thead>
+    {% block headers %}
+      <th>Subject</th>
+      <th>From</th>
+      <th>Sent</th>
+    {% endblock %}
+    </thead>
+    <tbody>
+    {% block rows %}
+      {% if messages %}
+        {% for message in messages %}
+          <tr>
+            <td>
+              <a href="{% url 'member-message-detail' message.uuid %}">
+                {{ message.subject }}
+              </a>
+            </td>
+            <td>{{ message.sender.handle }}</td>
+            <td>{{ message.timestamp }}</td>
+          </tr>
+        {% endfor %}
+      {% else %}
+        <p class="text-center">No messages to display.</p>
+      {% endif %}
+    {% endblock %}
+    </tbody>
+  </table>
+{% endblock %}

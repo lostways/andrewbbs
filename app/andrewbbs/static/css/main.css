@@ -1,10 +1,27 @@
+:root {
+  --color-pink: #fe54fe;
+  --color-blue: #000084;
+  --color-green: #00aaaa;
+  --color-red: #ff0000;
+}
+
 body { 
   visibility: hidden;
   padding: 0px;
 }
 
+.container {
+    margin: 0px auto;
+}
+
+@media (min-width: 768px) {
+    .container {
+        width: 100%;
+    }
+}
+
 .container-fluid {
-  padding: 0px;
+    padding: 0px;
 }
 
 .content {
@@ -37,6 +54,23 @@ body {
     -moz-border-radius: 0;
           border-radius: 0;
     box-shadow: 0 0 0 4px #00aaaa;
+}
+
+.black-box {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+    max-width: 23em;
+    padding: 1em;
+    font-size: 18px;
+    line-height: 20px;
+    color: #ffffff;
+    background-color: #000000;
+    border: 4px double #ffffff;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+          border-radius: 0;
+    box-shadow: 0 0 0 4px #000000;
 }
 
 .ascii-art {
@@ -73,6 +107,11 @@ h3 {
     margin-bottom: 15px;
 }
 
+.ascii-header>a:hover, .ascii-header>a:focus {
+    border: none;
+    background-color: transparent;
+}
+
 /* Navigation */
 .navbar-container {
     max-width: 960px;
@@ -81,15 +120,50 @@ h3 {
 
 .navbar {
     background-color: #bbb;
+    margin: 0px;
+    padding: 0px 3px;
+}
+
+@media (max-width: 500px) {
+    .nav.navbar-nav.home-item {
+        display: none;
+    }
+}
+
+.navbar .nav>li>a {
+    padding: 0px 10px;
+    cursor: pointer;
+}
+
+.navbar .nav>li>a.attention  {
+  font-style: italic;
+}
+
+.navbar .divider-vertical {
+  margin: 0px;
 }
 
 .nav-items {
     width: 100%;
 }
 
+.nav-list {
+    margin-top: 0;
+    margin-bottom: 3rem;
+}
+
+
+.side-bar {
+    margin-bottom: 2em;
+}
+
 /* Forms */
 form legend {
     text-align: center;
+}
+
+form .width-full {
+    width: 100%;
 }
 
 label.required::after {
@@ -111,4 +185,26 @@ form.member-register select {
 
 form.member-login {
     max-width: 15rem; 
+}
+
+form.member-message {
+    max-width: 80rem; 
+}
+
+
+/* Messages */
+.message-detail {
+    max-width: 100%;
+}
+
+.message-detail .meta {
+    color: #0aa;
+}
+
+.message-read {
+    color: #bbb;
+}
+
+.row-fluid .col.message-content {
+    margin-left: 0px;
 }

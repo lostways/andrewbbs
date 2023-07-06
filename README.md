@@ -15,7 +15,7 @@ Docker is the prefered way to run a local development environment. Everything is
 
 Copy the local .env.example to .env and fill in the correct vars for your setup
 ```
-cp ./.envs/local/.env.example ./envs/local/.env
+cp ./.envs/local/.env.example ./.envs/local/.env
 ```
 
 To build the image, make and run migrations, and run the dev server, use:
@@ -38,10 +38,20 @@ To run a django mangement command use `make manage`. For example:
 make manage shell
 ```
 
-## OTP Login
-The app is able to use the Twilio api to do OTP login. See [Twilio Verification API](https://www.twilio.com/docs/verify/api) for more details. 
+To format your code with `black`:
+```
+make format
+```
 
-For development there is a local OTP provider that doesn't depend on Twilio. To use it set `OTP_PROVIER` to `local`. The correct auth code is sent to the logs. Use it to login.
+## OTP Login
+The app is able to use the Twilio api to do OTP login via SMS. See [Twilio Verification API](https://www.twilio.com/docs/verify/api) for more details. 
+
+For development there is a local SMS provider that doesn't depend on Twilio. To use it set `SMS_PROVIER` to `local`. The correct auth code is sent to the logs. Use it to login.
+
+## SMS Notifications
+Notifications for new messages are sent via SMS using Twilio. See [Twilio SMS API](https://www.twilio.com/docs/sms/send-messages) for more details.
+
+For development use the local SMS provider by setting `SMS_PROVIER` to `local`.
 
 ## Database
 A Postgress DB should be running on `localhost:5432`. 
@@ -55,8 +65,14 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
   - add continuous deployment via workflows
   - move certs to volumes
   - Reduce size of django image?
+  - run tests in github workflow
 - App
   - Add view and edit member details
   - Add view member list
-  - Add message sysop feature 
+  - Message system
+    - Add admin send to all feature
+    - Add reply to message feature
+    - Message pagination
+    - Link in in SMS?
+    - Encrypted Messaging
   - Alerts for new joins

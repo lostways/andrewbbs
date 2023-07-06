@@ -20,11 +20,14 @@ shell:
 	docker-compose exec app bash
 migrate:
 	@echo "==> Migrating Andrew BBS"
-	docker-compose run app python manage.py makemigrations
-	docker-compose run app python manage.py migrate
+	docker-compose run --rm app python manage.py makemigrations
+	docker-compose run --rm app python manage.py migrate
 test:
 	@echo "==> Test Andrew BBS"
 	docker-compose exec app python manage.py test -v 2
 manage:
 	@echo "==> Executing manage.py $(c) in Andrew BBS"
 	docker-compose exec app python manage.py $(filter-out $@,$(MAKECMDGOALS))
+format:
+	@echo "==> Formatting Andrew BBS code with black"
+	docker-compose exec app black . --exclude /andrewbbs/migrations/

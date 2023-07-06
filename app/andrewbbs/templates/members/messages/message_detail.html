@@ -1,0 +1,11 @@
+{% extends 'layout/messages.html' %}
+{% load markdown_extras %}
+
+{% block content %}
+<div class="black-box message-detail">
+  <p><span class="meta">{{ message.timestamp }}</span></p>
+  <p><span class="meta">FROM:</span> {{ message.sender.handle | safe }}</p>
+  <p><span class="meta">SUBJECT:</span> {{ message.subject | safe }}</p>
+  <p>{{ message.body | markdown | safe }}</p>
+</div>
+{% endblock %}
