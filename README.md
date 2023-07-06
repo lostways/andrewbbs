@@ -73,4 +73,6 @@ After you log in to PgAdmin you can access the DB by adding a new server with Ma
     - Add admin send to all feature
     - Add reply to message feature
     - Message pagination
+    - Link in in SMS?
+    - Encrypted Messaging
   - Alerts for new joins
