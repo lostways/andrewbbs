@@ -21,7 +21,7 @@ ipykernel==6.15.3
 ipython==8.5.0
 isort==5.10.1
 jedi==0.18.1
-jupyter-core==4.11.1
+jupyter-core==4.11.2
 jupyter_client==7.3.5
 lazy-object-proxy==1.7.1
 Markdown==3.4.1
