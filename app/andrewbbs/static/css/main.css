@@ -205,3 +205,6 @@ form.member-message {
     color: #bbb;
 }
 
+.row-fluid .col.message-content {
+    margin-left: 0px;
+}

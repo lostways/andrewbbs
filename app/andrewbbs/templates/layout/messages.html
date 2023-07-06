@@ -4,20 +4,20 @@
 {% url 'member-message-sent' as sent_url %}
 {% url 'member-message-send' as send_url %}
 <div class="row-fluid">
-  <div class="span3">
+  <div class="span12">
     <ul class="nav nav-list side-bar">
       <li class="{% if request.path == inbox_url %}active{% endif %}">
         <a href="{{inbox_url}}">Inbox</a>
       </li>
-      <li class="{% if request.path == sent_url %}active{% endif %}">
-        <a href="{{sent_url}}">Sent</a>
-      </li>
       <li class="{% if request.path == send_url %}active{% endif %}">
         <a href="{{send_url}}">Send Message</a>
       </li>
+      <li class="{% if request.path == sent_url %}active{% endif %}">
+        <a href="{{sent_url}}">Sent</a>
+      </li>
     </ul>
   </div>
-  <div class="col span9">
+  <div class="col span12 message-content">
     {% block content %}{% endblock %}
   </div>
 </div>
