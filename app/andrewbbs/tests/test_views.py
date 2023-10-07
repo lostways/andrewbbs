@@ -291,12 +291,18 @@ class MessageTestCase(TestCase):
 
 class ScreenTestCase(TestCase):
     def setUp(self):
-        self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
-        self.access_code_345 = AccessCode.objects.create(code="testCaseCode345")
-        self.access_code_679 = AccessCode.objects.create(code="testCaseCode678")
-
         test_user = User.objects.create_user(
             handle="testuser", phone="+1234567890", password="testpassword"
+        )
+
+        self.access_code_123 = AccessCode.objects.create(
+            code="testCaseCode123",author=test_user
+        )
+        self.access_code_345 = AccessCode.objects.create(
+            code="testCaseCode345", author=test_user
+        )
+        self.access_code_679 = AccessCode.objects.create(
+            code="testCaseCode678", author=test_user
         )
 
         self.screen_1 = Screen.objects.create(
@@ -415,10 +421,12 @@ class ScreenTestCase(TestCase):
 
 class AccessTestCase(TestCase):
     def setUp(self):
-        self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
-
         test_user = User.objects.create_user(
             handle="testuser", phone="+1234567890", password="testpassword"
+        )
+
+        self.access_code_123 = AccessCode.objects.create(
+            code="testCaseCode123", author=test_user
         )
 
         self.screen_1 = Screen.objects.create(
@@ -671,3 +679,70 @@ class MemberTestCase(TestCase):
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, "members/verify.html")
             self.assertContains(response, "Invalid code")
+
+class AccessCodeTestCase(TestCase):
+    def setUp(self):
+        test_user = User.objects.create_user(
+            handle="testuser", phone="+1234567890", password="testpassword"
+        )
+
+        self.access_code_123 = AccessCode.objects.create(
+            code="testCaseCode123", author=test_user
+        )
+        self.access_code_345 = AccessCode.objects.create(
+            code="testCaseCode345", author=test_user
+        )
+        self.access_code_678 = AccessCode.objects.create(
+            code="testCaseCode678", author=test_user
+        )
+
+        self.screen_1 = Screen.objects.create(
+            title="Test1",
+            body="Test One Body",
+            slug="test-1",
+            published=True,
+            author=test_user,
+        )
+
+        self.screen_2 = Screen.objects.create(
+            title="Test2",
+            body="Test Two Body",
+            slug="test-2",
+            published=True,
+            author=test_user,
+        )
+
+        self.screen_3 = Screen.objects.create(
+            title="Test3",
+            body="Test Three Body",
+            slug="test-3",
+            published=True,
+            author=test_user,
+        )
+
+        self.screen_1.codes.add(self.access_code_123)
+        self.screen_1.codes.add(self.access_code_345)
+        self.screen_2.codes.add(self.access_code_345)
+        self.screen_2.codes.add(self.access_code_678)
+        self.screen_3.codes.add(self.access_code_123)
+        self.screen_3.codes.add(self.access_code_678)
+
+    def test_access_code_list_view(self):
+        response = self.client.get(reverse("access-code-list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "access_codes/access_code_list.html")
+        self.assertEqual(response.context["access_codes"].count(), 3)
+        self.assertEqual(response.context["access_codes"][0], self.access_code_123)
+        self.assertEqual(response.context["access_codes"][1], self.access_code_345)
+        self.assertEqual(response.context["access_codes"][2], self.access_code_678)
+
+
+        
+
+
+
+
+
+
+
+

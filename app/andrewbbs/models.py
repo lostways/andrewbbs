@@ -12,13 +12,21 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
+class AccessCodeManager(models.Manager):
+    def get_by_user(self, user):
+        return super().get_queryset().filter(author=user)
 
 class AccessCode(models.Model):
     code = models.CharField(max_length=100, unique=True)
     enabled = models.BooleanField(default=True)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="access_codes"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = AccessCodeManager()
 
     class Meta:
         ordering = ["code"]

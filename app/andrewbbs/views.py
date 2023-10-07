@@ -102,6 +102,10 @@ def access(request):
     context = {"form": form, "page_title": "Enter Access Code"}
     return render(request, "access.html", context)
 
+def access_code_list(request):
+    codes = AccessCode.objects.all()
+    context = {"access_codes": codes, "page_title": "Access Codes"}
+    return render(request, "access_codes/access_code_list.html", context)
 
 @login_required
 def member_message_inbox(request):
