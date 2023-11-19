@@ -107,6 +107,11 @@ def access_code_list(request):
     context = {"access_codes": codes, "page_title": "Access Codes"}
     return render(request, "access_codes/access_code_list.html", context)
 
+def access_code_detail(request, pk):
+    code = get_object_or_404(AccessCode, pk=pk)
+    context = {"access_code": code, "page_title": "Access Code Detail"}
+    return render(request, "access_codes/access_code_detail.html", context)
+
 @login_required
 def member_message_inbox(request):
     """List Messages"""

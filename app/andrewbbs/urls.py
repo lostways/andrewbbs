@@ -18,7 +18,16 @@ urlpatterns = [
         views.access,
         name="access",
     ),
-    path("codes", views.access_code_list, name="access-code-list"),
+    path(
+        "create/codes",
+        views.access_code_list,
+        name="access-code-list"
+    ),
+    path(
+        "create/code/<int:pk>",
+        views.access_code_detail,
+        name="code-detail",
+    ),
     path("members/register", views.member_register, name="member-register"),
     path("members/login", views.member_login, name="member-login"),
     path("members/otp/<int:pk>", views.member_login_verify, name="member-login-verify"),
