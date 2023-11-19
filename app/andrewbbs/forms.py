@@ -4,6 +4,7 @@ from django.forms import ModelForm
 from django.contrib.auth import get_user_model
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from .models import Message
+from .models import AccessCode
 
 User = get_user_model()
 
@@ -32,6 +33,18 @@ class MessageForm(forms.Form):
 class AccessCodeForm(forms.Form):
     code = forms.CharField(max_length=100, label="")
 
+class AccessCodeEditForm(ModelForm):
+    class Meta:
+        model = AccessCode
+        fields = ["code", "enabled"]
+        labels = {
+            "code": "Code",
+            "enabled": "Enabled",
+        }
+        widgets = {
+            "code": forms.TextInput(attrs={"placeholder": "Code"}),
+            "enabled": forms.CheckboxInput(),
+        }
 
 class MemberForm(ModelForm):
     class Meta:

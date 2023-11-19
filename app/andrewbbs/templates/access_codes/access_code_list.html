@@ -15,7 +15,7 @@
 {% for code in access_codes %}
     <tr>
       <td>
-        <a href="{% url 'code-detail' code.pk %}">
+        <a href="{% url 'access-code-detail' code.pk %}">
           {{ code.code }}
         </a>
       </td>

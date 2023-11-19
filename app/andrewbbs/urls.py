@@ -26,7 +26,7 @@ urlpatterns = [
     path(
         "create/code/<int:pk>",
         views.access_code_detail,
-        name="code-detail",
+        name="access-code-detail",
     ),
     path("members/register", views.member_register, name="member-register"),
     path("members/login", views.member_login, name="member-login"),

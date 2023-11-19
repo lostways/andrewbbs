@@ -1,0 +1,10 @@
+{% extends "layout/base.html" %}
+
+{% block content %}
+<h3 class="text-center">Edit Access Code</h3>
+<form class="light-green-box" action="" method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" class="btn clear" value="< Save >">
+</form>
+{% endblock %}

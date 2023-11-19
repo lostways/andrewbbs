@@ -13,6 +13,8 @@ from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
 from .forms import MessageForm
+from .forms import AccessCodeEditForm
+
 from .SMS.provider import get_sms_provider
 
 User = get_user_model()
@@ -102,14 +104,21 @@ def access(request):
     context = {"form": form, "page_title": "Enter Access Code"}
     return render(request, "access.html", context)
 
+@login_required
 def access_code_list(request):
     codes = AccessCode.objects.all()
     context = {"access_codes": codes, "page_title": "Access Codes"}
     return render(request, "access_codes/access_code_list.html", context)
 
+@login_required
 def access_code_detail(request, pk):
     code = get_object_or_404(AccessCode, pk=pk)
-    context = {"access_code": code, "page_title": "Access Code Detail"}
+    form = AccessCodeEditForm(request.POST or None, instance=code)
+    if form.is_valid():
+        form.save()
+        return redirect("access-code-list")
+
+    context = {"form": form, "page_title": "Edit Access Code"}
     return render(request, "access_codes/access_code_detail.html", context)
 
 @login_required
