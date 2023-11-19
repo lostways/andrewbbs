@@ -106,14 +106,19 @@ def access(request):
 
 @login_required
 def access_code_list(request):
-    codes = AccessCode.objects.all()
+    codes = AccessCode.objects.get_by_user(request.user)
     context = {"access_codes": codes, "page_title": "Access Codes"}
     return render(request, "access_codes/access_code_list.html", context)
 
 @login_required
 def access_code_detail(request, pk):
     code = get_object_or_404(AccessCode, pk=pk)
+
+    if code.author != request.user:
+        raise Http404("Access Code does not exist")
+
     form = AccessCodeEditForm(request.POST or None, instance=code)
+
     if form.is_valid():
         form.save()
         return redirect("access-code-list")

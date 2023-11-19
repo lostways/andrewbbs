@@ -686,6 +686,10 @@ class AccessCodeEditTestCase(TestCase):
             handle="testuser", phone="+1234567890", password="testpassword"
         )
 
+        self.ohter_user = User.objects.create_user(
+            handle="otheruser", phone="+1234567891", password="testpassword"
+        )
+
         self.access_code_123 = AccessCode.objects.create(
             code="testCaseCode123", author=self.test_user
         )
@@ -694,6 +698,11 @@ class AccessCodeEditTestCase(TestCase):
         )
         self.access_code_678 = AccessCode.objects.create(
             code="testCaseCode678", author=self.test_user
+        )
+        
+        # code that is not created by the test user
+        self.access_code_679 = AccessCode.objects.create(
+            code="testCaseCode679", author=self.ohter_user
         )
 
         self.screen_1 = Screen.objects.create(
@@ -754,6 +763,13 @@ class AccessCodeEditTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "access_codes/access_code_detail.html")
         self.assertEqual(response.context["form"].instance, self.access_code_123)
+
+    def test_access_code_detail_view_unauthorised(self):
+        self.client.force_login(self.test_user)
+        response = self.client.get(
+            reverse("access-code-detail", kwargs={"pk": self.access_code_679.pk})
+        )
+        self.assertEqual(response.status_code, 404)
 
     def test_access_code_detail_view_unauthenticated(self):
         response = self.client.get(
