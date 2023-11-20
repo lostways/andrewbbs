@@ -37,6 +37,9 @@ class AccessCode(models.Model):
     def has_screens(self):
         return Screen.objects.filter(codes__in=[self]).exists()
 
+class ScreenManager(models.Manager):
+    def get_by_user(self, user):
+        return super().get_queryset().filter(author=user)
 
 class Screen(models.Model):
     body = models.TextField()
@@ -52,6 +55,8 @@ class Screen(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     codes = models.ManyToManyField(AccessCode, blank=True, related_name="screens")
+
+    objects = ScreenManager()
 
     class Meta:
         ordering = ["-created_at"]

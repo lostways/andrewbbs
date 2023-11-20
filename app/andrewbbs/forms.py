@@ -5,9 +5,27 @@ from django.contrib.auth import get_user_model
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from .models import Message
 from .models import AccessCode
+from .models import Screen
 
 User = get_user_model()
 
+class ScreenEditForm(ModelForm):
+    class Meta:
+        model = Screen
+        fields = ["title", "slug", "body", "codes"]
+        labels = {
+            "title": "Title",
+            "slug": "Slug",
+            "body": "Body",
+            "codes": "Codes",
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "Title"}),
+            "slug": forms.TextInput(attrs={"placeholder": "Slug"}),
+            "body": forms.Textarea(attrs={"placeholder": "Body"}),
+            "codes": forms.SelectMultiple(),
+        }
+        
 
 class MessageForm(forms.Form):
     recipient = forms.CharField(max_length=100, label="To Handle")

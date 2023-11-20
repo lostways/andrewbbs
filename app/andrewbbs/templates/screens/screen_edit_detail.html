@@ -1,0 +1,26 @@
+{% extends 'layout/base.html' %}
+
+{% block content %}
+<form class="light-green-box" method="post" action="">
+    {% csrf_token %}
+    <fieldset>
+      <legend>Edit Screen</legend>
+      {% for field in form %}
+      <p>
+        <label 
+          {% if field.field.required %}class="required"{% endif %}
+          for="{{ field.id_for_label }}"
+        >
+        {{ field.label }}
+        {% if field.name == 'body' %}
+        <span class="label-extra">(you can use <a target="new" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">markdown</a>)</span>
+        {% endif %}
+        </label>
+        {{ field.errors }}
+        {{ field }}
+      </p>
+      {% endfor %}
+      <input type="submit" class="btn clear" value="< Save >" />
+    </fieldset>
+</form>
+{% endblock %}

@@ -14,6 +14,7 @@ from .forms import LoginForm
 from .forms import OTPForm
 from .forms import MessageForm
 from .forms import AccessCodeEditForm
+from .forms import ScreenEditForm
 
 from .SMS.provider import get_sms_provider
 
@@ -125,6 +126,28 @@ def access_code_detail(request, pk):
 
     context = {"form": form, "page_title": "Edit Access Code"}
     return render(request, "access_codes/access_code_detail.html", context)
+
+@login_required
+def screen_edit_list(request):
+    screens = Screen.objects.get_by_user(request.user)
+    context = {"screen_list": screens, "page_title": "Your Screens"}
+    return render(request, "screens/screen_edit_list.html", context)
+
+@login_required
+def screen_edit_detail(request,pk):
+    screen = get_object_or_404(Screen, pk=pk)
+
+    if screen.author != request.user:
+        raise Http404("Screen does not exist")
+
+    form = ScreenEditForm(request.POST or None, instance=screen)
+
+    if form.is_valid():
+        form.save()
+        return redirect("screen-edit-list")
+
+    context = {"form": form, "page_title": "Edit Screen"}
+    return render(request, "screens/screen_edit_detail.html", context)
 
 @login_required
 def member_message_inbox(request):
