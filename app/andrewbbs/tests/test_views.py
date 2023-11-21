@@ -781,6 +781,39 @@ class AccessCodeEditTestCase(TestCase):
             f"{settings.LOGIN_URL}?next={reverse('access-code-detail', kwargs={'pk': self.access_code_123.pk})}",
         )
 
+    def test_access_code_create_view(self):
+        create_test_user = User.objects.create_user(
+            handle="createtestuser", phone="+1234567810", password="testpassword"
+        )
+
+        self.client.force_login(create_test_user)
+        response = self.client.get(reverse("access-code-create"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "access_codes/access_code_detail.html")
+        self.assertEqual(response.context["form"].instance.enabled, True)
+
+        # Test creating new code
+        response = self.client.post(
+            reverse("access-code-create"), data={"code": "newCode", "enabled": True}
+        )
+        
+        users_codes = AccessCode.objects.get_by_user(create_test_user)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("access-code-list"))
+        self.assertEqual(users_codes.count(), 1)
+        self.assertEqual(users_codes.last().code, "newCode")
+        self.assertEqual(users_codes.last().author, create_test_user)
+
+
+    def test_access_code_create_view_unauthenticated(self):
+        response = self.client.get(reverse("access-code-create"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            f"{settings.LOGIN_URL}?next={reverse('access-code-create')}",
+        )
+
 
         
 

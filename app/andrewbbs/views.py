@@ -128,6 +128,19 @@ def access_code_detail(request, pk):
     return render(request, "access_codes/access_code_detail.html", context)
 
 @login_required
+def access_code_create(request):
+    form = AccessCodeEditForm(request.POST or None)
+
+    if form.is_valid():
+        code = form.save(commit=False)
+        code.author = request.user
+        code.save()
+        return redirect("access-code-list")
+
+    context = {"form": form, "page_title": "Create Access Code"}
+    return render(request, "access_codes/access_code_detail.html", context)
+
+@login_required
 def screen_edit_list(request):
     screens = Screen.objects.get_by_user(request.user)
     context = {"screen_list": screens, "page_title": "Your Screens"}
