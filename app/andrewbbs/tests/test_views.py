@@ -988,6 +988,62 @@ class ScreenEditTestCase(TestCase):
         self.assertEqual(new_screen.published, True)
         self.assertEqual(new_screen.author, self.test_user)
 
+    def test_screen_create_view_duplicate_slug(self):
+        existing_screen_ = Screen.objects.create(
+            title="New Screen 1",
+            body="Test Body",
+            slug="new-screen",
+            published=True,
+            author=self.test_user,
+        )
+
+        self.client.force_login(self.test_user)
+        #this shuold create a screen with a dubplicate slug
+        response = self.client.post(
+            reverse("screen-create"), data={"title": "New Screen",
+                  "body": "Test One Body Change", 
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": True}
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("screen-edit-list"))
+
+        new_screen = Screen.objects.get(title="New Screen")
+        self.assertEqual(new_screen.slug, "new-screen-1")
+
+    def test_screen_edit_detail_view_duplicate_slug(self):
+        existing_screen = Screen.objects.create(
+            title="New Screen 1",
+            body="Test Body",
+            slug="new-screen",
+            published=True,
+            author=self.other_user,
+        )
+
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk}), data={"title": "New Screen",
+                  "body": "Test One Body Change", 
+                  "slug": "new-screen",
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": True}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_edit_detail.html")
+        self.assertContains(response, "Screen with this Slug already exists.")
+
+
+
+
+
+
+
+
+
+
+
 
 
 

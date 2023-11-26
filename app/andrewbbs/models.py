@@ -64,10 +64,11 @@ class Screen(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            while True:
-                self.slug = slugify(self.title)
-                if not Screen.objects.filter(slug=self.slug).exists():
-                    break
+            # append number to slug if it already exists
+            slug = slugify(self.title)
+            if Screen.objects.filter(slug=slug).exists():
+                slug = f"{slug}-{Screen.objects.filter(slug__startswith=slug).count()}"
+            self.slug = slug
         super().save(*args, **kwargs)
 
     def __str__(self):
