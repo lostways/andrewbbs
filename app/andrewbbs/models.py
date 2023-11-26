@@ -8,6 +8,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.urls import reverse
+from django.utils.text import slugify
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
@@ -60,6 +61,14 @@ class Screen(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            while True:
+                self.slug = slugify(self.title)
+                if not Screen.objects.filter(slug=self.slug).exists():
+                    break
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

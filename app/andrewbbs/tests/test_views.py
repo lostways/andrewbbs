@@ -967,21 +967,21 @@ class ScreenEditTestCase(TestCase):
 
         # Test creating new screen
         response = self.client.post(
-            reverse("screen-create"), data={"title": "Test5",
-                  "slug": "test-5",
+            reverse("screen-create"), data={"title": "Test Five",
                   "body": "Test Five Body", 
                   "codes": [self.access_code_123.pk,self.access_code_345.pk],
                   "published": True}
         )
         
         users_screens = Screen.objects.get_by_user(self.test_user)
-        new_screen = users_screens.filter(title="Test5").first()
+        new_screen = users_screens.filter(title="Test Five").first()
 
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse("screen-edit-list"))
         self.assertEqual(users_screens.count(), 4)
-        self.assertEqual(new_screen.title, "Test5")
+        self.assertEqual(new_screen.title, "Test Five")
         self.assertEqual(new_screen.body, "Test Five Body")
+        self.assertEqual(new_screen.slug, "test-five")
         self.assertEqual(new_screen.codes.count(), 2)
         self.assertEqual(new_screen.codes.first(), self.access_code_123)
         self.assertEqual(new_screen.codes.last(), self.access_code_345)

@@ -40,6 +40,23 @@ class ScreenEditForm(ModelForm):
                 raise forms.ValidationError("Invalid access code")
         return codes
 
+class ScreenCreateForm(ScreenEditForm):
+    class Meta:
+        model = Screen
+        fields = ["title", "body", "codes", "published"]
+        labels = {
+            "title": "Title",
+            "body": "Body",
+            "codes": "Codes",
+            "published:": "Published",
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={"placeholder": "Title"}),
+            "body": forms.Textarea(attrs={"placeholder": "Body"}),
+            "codes": forms.SelectMultiple(),
+            "published": forms.CheckboxInput(),
+        }
+
 class MessageForm(forms.Form):
     recipient = forms.CharField(max_length=100, label="To Handle")
     subject = forms.CharField(

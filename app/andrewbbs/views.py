@@ -15,6 +15,7 @@ from .forms import OTPForm
 from .forms import MessageForm
 from .forms import AccessCodeEditForm
 from .forms import ScreenEditForm
+from .forms import ScreenCreateForm
 
 from .SMS.provider import get_sms_provider
 
@@ -164,12 +165,13 @@ def screen_edit_detail(request,pk):
 
 @login_required
 def screen_create(request):
-    form = ScreenEditForm(request.user,request.POST or None)
+    form = ScreenCreateForm(request.user,request.POST or None)
     
     if form.is_valid():
         screen = form.save(commit=False)
         screen.author = request.user
         screen.save()
+        # this saves codes which are m2m fields
         form.save_m2m()
         return redirect("screen-edit-list")
 
