@@ -153,13 +153,27 @@ def screen_edit_detail(request,pk):
     if screen.author != request.user:
         raise Http404("Screen does not exist")
 
-    form = ScreenEditForm(request.POST or None, instance=screen)
+    form = ScreenEditForm(request.user,request.POST or None, instance=screen)
 
     if form.is_valid():
         form.save()
         return redirect("screen-edit-list")
 
     context = {"form": form, "page_title": "Edit Screen"}
+    return render(request, "screens/screen_edit_detail.html", context)
+
+@login_required
+def screen_create(request):
+    form = ScreenEditForm(request.user,request.POST or None)
+    
+    if form.is_valid():
+        screen = form.save(commit=False)
+        screen.author = request.user
+        screen.save()
+        form.save_m2m()
+        return redirect("screen-edit-list")
+
+    context = {"form": form, "page_title": "Create Screen"}
     return render(request, "screens/screen_edit_detail.html", context)
 
 @login_required

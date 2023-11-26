@@ -686,7 +686,7 @@ class AccessCodeEditTestCase(TestCase):
             handle="testuser", phone="+1234567890", password="testpassword"
         )
 
-        self.ohter_user = User.objects.create_user(
+        self.other_user = User.objects.create_user(
             handle="otheruser", phone="+1234567891", password="testpassword"
         )
 
@@ -702,7 +702,7 @@ class AccessCodeEditTestCase(TestCase):
         
         # code that is not created by the test user
         self.access_code_679 = AccessCode.objects.create(
-            code="testCaseCode679", author=self.ohter_user
+            code="testCaseCode679", author=self.other_user
         )
 
         self.screen_1 = Screen.objects.create(
@@ -814,8 +814,186 @@ class AccessCodeEditTestCase(TestCase):
             f"{settings.LOGIN_URL}?next={reverse('access-code-create')}",
         )
 
+class ScreenEditTestCase(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create_user(
+            handle="testuser", phone="+1234567890", password="testpassword"
+        )
 
+        self.other_user = User.objects.create_user(
+            handle="otheruser", phone="+1234567891", password="testpassword"
+        )
+
+        self.access_code_123 = AccessCode.objects.create(
+            code="testCaseCode123", author=self.test_user
+        )
+        self.access_code_345 = AccessCode.objects.create(
+            code="testCaseCode345", author=self.test_user
+        )
+        self.access_code_678 = AccessCode.objects.create(
+            code="testCaseCode678", author=self.test_user
+        )
         
+        # code that is not created by the test user
+        self.access_code_679 = AccessCode.objects.create(
+            code="testCaseCode679", author=self.other_user
+        )
+
+        self.screen_1 = Screen.objects.create(
+            title="Test1",
+            body="Test One Body",
+            slug="test-1",
+            published=True,
+            author=self.test_user,
+        )
+
+        self.screen_2 = Screen.objects.create(
+            title="Test2",
+            body="Test Two Body",
+            slug="test-2",
+            published=True,
+            author=self.test_user,
+        )
+
+        self.screen_3 = Screen.objects.create(
+            title="Test3",
+            body="Test Three Body",
+            slug="test-3",
+            published=True,
+            author=self.test_user,
+        )
+
+        self.screen_4 = Screen.objects.create(
+            title="Test4",
+            body="Test Four Body",
+            slug="test-4",
+            published=True,
+            author=self.other_user,
+        )
+
+        self.screen_1.codes.add(self.access_code_123)
+        self.screen_1.codes.add(self.access_code_345)
+        self.screen_2.codes.add(self.access_code_345)
+        self.screen_2.codes.add(self.access_code_678)
+        self.screen_3.codes.add(self.access_code_123)
+        self.screen_3.codes.add(self.access_code_678)
+
+    def test_screen_create_list_view(self):
+        self.client.force_login(self.test_user)
+        response = self.client.get(reverse("screen-edit-list"))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_edit_list.html")
+        self.assertEqual(response.context["screen_list"].count(), 3)
+        self.assertEqual(response.context["screen_list"][0], self.screen_3)
+        self.assertEqual(response.context["screen_list"][1], self.screen_2)
+        self.assertEqual(response.context["screen_list"][2], self.screen_1)
+
+    def test_screen_create_list_view_unauthenticated(self):
+        response = self.client.get(reverse("screen-edit-list"))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            f"{settings.LOGIN_URL}?next={reverse('screen-edit-list')}",
+        )
+    
+    def test_screen_create_detail_view(self):
+        self.client.force_login(self.test_user)
+        response = self.client.get(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_edit_detail.html")
+        self.assertEqual(response.context["form"].instance, self.screen_1)
+
+    def test_screen_create_detail_view_unauthorised(self):
+        self.client.force_login(self.test_user)
+        response = self.client.get(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_4.pk})
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_screen_create_detail_view_unauthenticated(self):
+        response = self.client.get(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk})
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            f"{settings.LOGIN_URL}?next={reverse('screen-edit-detail', kwargs={'pk': self.screen_1.pk})}",
+        )
+        
+    def test_screen_edit_detail_save_view(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk}),
+            data={"title": "Test1",
+                  "slug": "test-1",
+                  "body": "Test One Body Change", 
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": True},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("screen-edit-list"))
+        self.assertEqual(Screen.objects.count(), 4)
+        self.assertEqual(Screen.objects.last().title, "Test1")
+        self.assertEqual(Screen.objects.last().body, "Test One Body Change")
+        self.assertEqual(Screen.objects.last().codes.count(), 2)
+        self.assertEqual(Screen.objects.last().codes.first(), self.access_code_123)
+        self.assertEqual(Screen.objects.last().codes.last(), self.access_code_345)
+        self.assertEqual(Screen.objects.last().published, True)
+        self.assertEqual(Screen.objects.last().author, self.test_user)
+
+    def test_screen_edit_detail_save_view_code_unauthorised(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk}),
+            data={"title": "Test1",
+                  "slug": "test-1",
+                  "body": "Test One Body Change", 
+                  "codes": [self.access_code_123.pk,self.access_code_679.pk],
+                  "published": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_edit_detail.html")
+        self.assertContains(response, "Invalid access code")
+
+    def test_screen_create_view(self):
+        self.client.force_login(self.test_user)
+        response = self.client.get(reverse("screen-create"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_edit_detail.html")
+        self.assertEqual(response.context["form"].instance.published, False)
+
+        # Test creating new screen
+        response = self.client.post(
+            reverse("screen-create"), data={"title": "Test5",
+                  "slug": "test-5",
+                  "body": "Test Five Body", 
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": True}
+        )
+        
+        users_screens = Screen.objects.get_by_user(self.test_user)
+        new_screen = users_screens.filter(title="Test5").first()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse("screen-edit-list"))
+        self.assertEqual(users_screens.count(), 4)
+        self.assertEqual(new_screen.title, "Test5")
+        self.assertEqual(new_screen.body, "Test Five Body")
+        self.assertEqual(new_screen.codes.count(), 2)
+        self.assertEqual(new_screen.codes.first(), self.access_code_123)
+        self.assertEqual(new_screen.codes.last(), self.access_code_345)
+        self.assertEqual(new_screen.published, True)
+        self.assertEqual(new_screen.author, self.test_user)
+
+
+
+
+
+
+
 
 
 

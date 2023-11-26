@@ -10,22 +10,35 @@ from .models import Screen
 User = get_user_model()
 
 class ScreenEditForm(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(ScreenEditForm, self).__init__(*args, **kwargs)
+        self.user = user
+
     class Meta:
         model = Screen
-        fields = ["title", "slug", "body", "codes"]
+        fields = ["title", "slug", "body", "codes", "published"]
         labels = {
             "title": "Title",
             "slug": "Slug",
             "body": "Body",
             "codes": "Codes",
+            "published:": "Published",
         }
         widgets = {
             "title": forms.TextInput(attrs={"placeholder": "Title"}),
             "slug": forms.TextInput(attrs={"placeholder": "Slug"}),
             "body": forms.Textarea(attrs={"placeholder": "Body"}),
             "codes": forms.SelectMultiple(),
+            "published": forms.CheckboxInput(),
         }
-        
+
+    # make sure that codes are owned by logged in user
+    def clean_codes(self):
+        codes = self.cleaned_data.get("codes")
+        for code in codes:
+            if code.author != self.user:
+                raise forms.ValidationError("Invalid access code")
+        return codes
 
 class MessageForm(forms.Form):
     recipient = forms.CharField(max_length=100, label="To Handle")
