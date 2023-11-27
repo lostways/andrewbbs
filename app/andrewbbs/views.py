@@ -33,6 +33,7 @@ def index(request):
         screens = (
             Screen.objects.filter(
                 codes__code__in=codes,
+                published=True,
             )
             .distinct()
             .order_by("-updated_at")
@@ -58,7 +59,7 @@ def detail(request, slug):
     codes = request.unlocked_codes
 
     if codes:
-        screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
+        screen = Screen.objects.filter(slug=slug, codes__code__in=codes, published=True).distinct()
         screen = get_object_or_404(screen)
     else:
         # if no codes return 404

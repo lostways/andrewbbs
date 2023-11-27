@@ -329,11 +329,12 @@ class ScreenTestCase(TestCase):
             author=test_user,
         )
 
+        # two screens per code
         self.screen_1.codes.add(self.access_code_123)
+        self.screen_3.codes.add(self.access_code_123)
         self.screen_1.codes.add(self.access_code_345)
         self.screen_2.codes.add(self.access_code_345)
         self.screen_2.codes.add(self.access_code_679)
-        self.screen_3.codes.add(self.access_code_123)
         self.screen_3.codes.add(self.access_code_679)
 
     def test_screen_list_no_codes(self):
@@ -386,6 +387,36 @@ class ScreenTestCase(TestCase):
         self.assertTemplateUsed(response, "screens/screen_list.html")
         self.assertQuerysetEqual(response.context["screen_list"], screens)
 
+    def test_screen_list_unlocked_only_published(self):
+        """Test that screen list view only returns published screens"""
+        session = self.client.session
+        session["codes"] = ["testCaseCode123"]
+        session.save()
+
+        screen_4 = Screen.objects.create(
+            title="Test4",
+            body="Test Four Body",
+            slug="test-4",
+            published=False,
+            author=self.screen_1.author,
+        )
+        screen_4.codes.add(self.access_code_123)
+
+        screens = (
+            Screen.objects.filter(
+                codes__code__in=["testCaseCode123"],
+                published=True,
+            )
+            .distinct()
+            .order_by("-updated_at")
+        )
+
+        response = self.client.get(reverse("screen-list"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_list.html")
+        self.assertEqual(response.context["screen_list"].count(), 2)
+        self.assertQuerysetEqual(response.context["screen_list"], screens)
+
     def test_screen_detail_locked(self):
         response = self.client.get(
             reverse("screen-detail", kwargs={"slug": self.screen_1.slug})
@@ -417,6 +448,25 @@ class ScreenTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "screens/screen_detail.html")
         self.assertEqual(response.context["screen"], self.screen_1)
+
+    def test_screen_detail_unlocked_only_published(self):
+        session = self.client.session
+        session["codes"] = ["testCaseCode123"]
+        session.save()
+
+        screen_4 = Screen.objects.create(
+            title="Test4",
+            body="Test Four Body",
+            slug="test-4",
+            published=False,
+            author=self.screen_1.author,
+        )
+        screen_4.codes.add(self.access_code_123)
+
+        response = self.client.get(
+            reverse("screen-detail", kwargs={"slug": screen_4.slug})
+        )
+        self.assertEqual(response.status_code, 404)
 
 
 class AccessTestCase(TestCase):
