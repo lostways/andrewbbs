@@ -162,6 +162,11 @@ form legend {
     text-align: center;
 }
 
+form.full-width {
+    width: 100%;
+    max-width: 80rem;
+}
+
 form .width-full {
     width: 100%;
 }

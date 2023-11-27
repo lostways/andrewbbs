@@ -25,9 +25,9 @@ class ScreenEditForm(ModelForm):
             "published:": "Published",
         }
         widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Title"}),
-            "slug": forms.TextInput(attrs={"placeholder": "Slug"}),
-            "body": forms.Textarea(attrs={"placeholder": "Body"}),
+            "title": forms.TextInput(attrs={"size": 80, "class": "width-full"}),
+            "slug": forms.TextInput(),
+            "body": forms.Textarea(attrs={"cols": 40, "rows": "30", "class": "width-full"}),
             "codes": forms.SelectMultiple(),
             "published": forms.CheckboxInput(),
         }
@@ -41,21 +41,9 @@ class ScreenEditForm(ModelForm):
         return codes
 
 class ScreenCreateForm(ScreenEditForm):
-    class Meta:
-        model = Screen
-        fields = ["title", "body", "codes", "published"]
-        labels = {
-            "title": "Title",
-            "body": "Body",
-            "codes": "Codes",
-            "published:": "Published",
-        }
-        widgets = {
-            "title": forms.TextInput(attrs={"placeholder": "Title"}),
-            "body": forms.Textarea(attrs={"placeholder": "Body"}),
-            "codes": forms.SelectMultiple(),
-            "published": forms.CheckboxInput(),
-        }
+    def __init__(self, user, *args, **kwargs):
+        super(ScreenCreateForm, self).__init__(user, *args, **kwargs)
+        del self.fields["slug"]
 
 class MessageForm(forms.Form):
     recipient = forms.CharField(max_length=100, label="To Handle")
