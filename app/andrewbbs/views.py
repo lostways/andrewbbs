@@ -158,6 +158,10 @@ def screen_edit_detail(request,pk):
     form = ScreenEditForm(request.user,request.POST or None, instance=screen)
 
     if form.is_valid():
+        if '_preview' in request.POST:
+            screen = form.save(commit=False)
+            context = {"screen": screen, "page_title": "Preview Screen - " + screen.title, "preview": True}
+            return render(request, "screens/screen_detail.html", context)
         form.save()
         return redirect("screen-edit-list")
 
@@ -171,6 +175,9 @@ def screen_create(request):
     if form.is_valid():
         screen = form.save(commit=False)
         screen.author = request.user
+        if '_preview' in request.POST:
+            context = {"screen": screen, "page_title": "Preview Screen - " + screen.title, "preview": True}
+            return render(request, "screens/screen_detail.html", context)
         screen.save()
         # this saves codes which are m2m fields
         form.save_m2m()

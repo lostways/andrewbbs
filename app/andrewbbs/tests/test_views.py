@@ -994,6 +994,24 @@ class ScreenEditTestCase(TestCase):
         self.assertEqual(Screen.objects.last().published, True)
         self.assertEqual(Screen.objects.last().author, self.test_user)
 
+    def test_screen_edit_detail_preview_view(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            reverse("screen-edit-detail", kwargs={"pk": self.screen_1.pk}),
+            data={"title": "Test1",
+                  "slug": "test-1",
+                  "body": "Test One Body Preview", 
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": False,
+                  "_preview": "<+preview+>"
+                  },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_detail.html")
+        self.assertEqual(response.context["preview"], True)
+        self.assertNotEqual(response.context["screen"].body, self.screen_1.body)
+        self.assertEqual(response.context["screen"].body, "Test One Body Preview")
+
     def test_screen_edit_detail_save_view_code_unauthorised(self):
         self.client.force_login(self.test_user)
         response = self.client.post(
@@ -1037,6 +1055,20 @@ class ScreenEditTestCase(TestCase):
         self.assertEqual(new_screen.codes.last(), self.access_code_345)
         self.assertEqual(new_screen.published, True)
         self.assertEqual(new_screen.author, self.test_user)
+
+    def test_screen_create_preview(self):
+        self.client.force_login(self.test_user)
+        response = self.client.post(
+            reverse("screen-create"), data={"title": "Test Five",
+                  "body": "Test Five Body", 
+                  "codes": [self.access_code_123.pk,self.access_code_345.pk],
+                  "published": False,
+                  "_preview": "<+preview+>"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "screens/screen_detail.html")
+        self.assertEqual(response.context["preview"], True)
+        self.assertEqual(response.context["screen"].body, "Test Five Body")
 
     def test_screen_create_view_duplicate_slug(self):
         existing_screen_ = Screen.objects.create(

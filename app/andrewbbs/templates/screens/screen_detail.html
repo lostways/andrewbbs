@@ -6,5 +6,7 @@
 
 {{ screen.body | markdown | safe }}
 
+{% if preview != True %}
 <a href="{% url 'screen-list' %}" class="btn">Back to Screens</a>
+{% endif %}
 {% endblock %}

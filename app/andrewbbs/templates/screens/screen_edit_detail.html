@@ -20,7 +20,8 @@
         {{ field }}
       </p>
       {% endfor %}
-      <input type="submit" class="btn clear" value="< Save >" />
+      <input name="_save" type="submit" class="btn clear" value="< Save >" />
+      <input name ="_preview" type="submit" class="btn clear" formtarget="_blank" value="< Preview >" />
     </fieldset>
 </form>
 {% endblock %}
