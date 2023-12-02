@@ -4,9 +4,46 @@ from django.forms import ModelForm
 from django.contrib.auth import get_user_model
 from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from .models import Message
+from .models import AccessCode
+from .models import Screen
 
 User = get_user_model()
 
+class ScreenEditForm(ModelForm):
+    def __init__(self, user, *args, **kwargs):
+        super(ScreenEditForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    class Meta:
+        model = Screen
+        fields = ["title", "slug", "body", "codes", "published"]
+        labels = {
+            "title": "Title",
+            "slug": "Slug",
+            "body": "Body",
+            "codes": "Codes",
+            "published:": "Published",
+        }
+        widgets = {
+            "title": forms.TextInput(attrs={"size": 80, "class": "width-full"}),
+            "slug": forms.TextInput(),
+            "body": forms.Textarea(attrs={"cols": 40, "rows": "30", "class": "width-full"}),
+            "codes": forms.SelectMultiple(),
+            "published": forms.CheckboxInput(),
+        }
+
+    # make sure that codes are owned by logged in user
+    def clean_codes(self):
+        codes = self.cleaned_data.get("codes")
+        for code in codes:
+            if code.author != self.user:
+                raise forms.ValidationError("Invalid access code")
+        return codes
+
+class ScreenCreateForm(ScreenEditForm):
+    def __init__(self, user, *args, **kwargs):
+        super(ScreenCreateForm, self).__init__(user, *args, **kwargs)
+        del self.fields["slug"]
 
 class MessageForm(forms.Form):
     recipient = forms.CharField(max_length=100, label="To Handle")
@@ -32,6 +69,18 @@ class MessageForm(forms.Form):
 class AccessCodeForm(forms.Form):
     code = forms.CharField(max_length=100, label="")
 
+class AccessCodeEditForm(ModelForm):
+    class Meta:
+        model = AccessCode
+        fields = ["code", "enabled"]
+        labels = {
+            "code": "Code",
+            "enabled": "Enabled",
+        }
+        widgets = {
+            "code": forms.TextInput(attrs={"placeholder": "Code"}),
+            "enabled": forms.CheckboxInput(),
+        }
 
 class MemberForm(ModelForm):
     class Meta:

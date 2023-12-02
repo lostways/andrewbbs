@@ -1,0 +1,30 @@
+{% extends "layout/create.html" %}
+
+{% block content %}
+<h3 class="text-center">Your Codes</h3>
+<table class=table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Enabled</th>
+      <th>Created</th>
+      <th>Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+{% for code in access_codes %}
+    <tr>
+      <td>
+        <a href="{% url 'access-code-detail' code.pk %}">
+          {{ code.code }}
+        </a>
+      </td>
+      <td>{{ code.enabled }}</td>
+      <td>{{ code.created_at }}</td>
+      <td>{{ code.updated_at }}</td>
+    </tr>
+{% endfor %}
+  </tbody>
+</table>
+<a href="{% url 'access-code-create' %}" class="btn">Create New Access Code</a>
+{% endblock %}

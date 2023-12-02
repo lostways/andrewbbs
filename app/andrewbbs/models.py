@@ -8,17 +8,26 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.urls import reverse
+from django.utils.text import slugify
 from phonenumber_field.modelfields import PhoneNumberField
 
 # Create your models here.
 
+class AccessCodeManager(models.Manager):
+    def get_by_user(self, user):
+        return super().get_queryset().filter(author=user)
 
 class AccessCode(models.Model):
     code = models.CharField(max_length=100, unique=True)
     enabled = models.BooleanField(default=True)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="access_codes"
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    objects = AccessCodeManager()
 
     class Meta:
         ordering = ["code"]
@@ -29,6 +38,9 @@ class AccessCode(models.Model):
     def has_screens(self):
         return Screen.objects.filter(codes__in=[self]).exists()
 
+class ScreenManager(models.Manager):
+    def get_by_user(self, user):
+        return super().get_queryset().filter(author=user)
 
 class Screen(models.Model):
     body = models.TextField()
@@ -45,8 +57,19 @@ class Screen(models.Model):
 
     codes = models.ManyToManyField(AccessCode, blank=True, related_name="screens")
 
+    objects = ScreenManager()
+
     class Meta:
         ordering = ["-created_at"]
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            # append number to slug if it already exists
+            slug = slugify(self.title)
+            if Screen.objects.filter(slug=slug).exists():
+                slug = f"{slug}-{Screen.objects.filter(slug__startswith=slug).count()}"
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title

@@ -223,12 +223,18 @@ class MemberTestCase(TestCase):
 
 class ScreenTestCase(TestCase):
     def setUp(self):
-        self.access_code_123 = AccessCode.objects.create(code="testCaseCode123")
-        self.access_code_345 = AccessCode.objects.create(code="testCaseCode345")
-        self.access_code_679 = AccessCode.objects.create(code="testCaseCode678")
-
         test_user = User.objects.create_user(
             handle="testuser", phone="+1234567890", password="testpassword"
+        )
+
+        self.access_code_123 = AccessCode.objects.create(
+            code="testCaseCode123", author=test_user
+        )
+        self.access_code_345 = AccessCode.objects.create(
+            code="testCaseCode345", author=test_user
+        )
+        self.access_code_679 = AccessCode.objects.create(
+            code="testCaseCode678" , author=test_user
         )
 
         self.screen_1 = Screen.objects.create(
@@ -275,9 +281,13 @@ class ScreenTestCase(TestCase):
 
 class AccessCodeTestCase(TestCase):
     def setUp(self):
-        AccessCode.objects.create(code="testCaseCode123")
-        AccessCode.objects.create(code="testCaseCode345")
-        AccessCode.objects.create(code="testCaseCode678")
+        self.test_user = User.objects.create_user(
+            handle="testuser", phone="+1234567890", password="testpassword"
+        )
+
+        AccessCode.objects.create(code="testCaseCode123", author=self.test_user)
+        AccessCode.objects.create(code="testCaseCode345", author=self.test_user)
+        AccessCode.objects.create(code="testCaseCode678", author=self.test_user)
 
         self.valid_code = "testCaseCode345"
         self.invalid_code = "notACode"
@@ -308,10 +318,21 @@ class AccessCodeTestCase(TestCase):
         self.assertEqual(codes_invalid.count(), 0)
 
     def test_disable_code(self):
-        AccessCode.objects.create(code="testCaseCode000", enabled=False)
+        AccessCode.objects.create(code="testCaseCode000", enabled=False, author=self.test_user)
         codes_array = self.valid_codes_array
         codes_array.append("testCaseCode000")
 
         codes_valid = AccessCode.objects.filter(code__in=codes_array, enabled=True)
 
         self.assertEqual(codes_valid.count(), 3)
+
+    def test_get_codes_for_user(self):
+        test_user_2 = User.objects.create_user(
+            handle="testuser2", phone="+1234567891", password="testpassword"
+        )
+
+        codes = AccessCode.objects.get_by_user(self.test_user)
+        codes_2 = AccessCode.objects.get_by_user(test_user_2)
+
+        self.assertEqual(codes.count(), 3)
+        self.assertEqual(codes_2.count(), 0)

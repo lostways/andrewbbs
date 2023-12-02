@@ -13,6 +13,10 @@ from .forms import MemberForm
 from .forms import LoginForm
 from .forms import OTPForm
 from .forms import MessageForm
+from .forms import AccessCodeEditForm
+from .forms import ScreenEditForm
+from .forms import ScreenCreateForm
+
 from .SMS.provider import get_sms_provider
 
 User = get_user_model()
@@ -29,6 +33,7 @@ def index(request):
         screens = (
             Screen.objects.filter(
                 codes__code__in=codes,
+                published=True,
             )
             .distinct()
             .order_by("-updated_at")
@@ -54,7 +59,7 @@ def detail(request, slug):
     codes = request.unlocked_codes
 
     if codes:
-        screen = Screen.objects.filter(slug=slug, codes__code__in=codes).distinct()
+        screen = Screen.objects.filter(slug=slug, codes__code__in=codes, published=True).distinct()
         screen = get_object_or_404(screen)
     else:
         # if no codes return 404
@@ -102,6 +107,84 @@ def access(request):
     context = {"form": form, "page_title": "Enter Access Code"}
     return render(request, "access.html", context)
 
+@login_required
+def access_code_list(request):
+    codes = AccessCode.objects.get_by_user(request.user)
+    context = {"access_codes": codes, "page_title": "Access Codes"}
+    return render(request, "access_codes/access_code_list.html", context)
+
+@login_required
+def access_code_detail(request, pk):
+    code = get_object_or_404(AccessCode, pk=pk)
+
+    if code.author != request.user:
+        raise Http404("Access Code does not exist")
+
+    form = AccessCodeEditForm(request.POST or None, instance=code)
+
+    if form.is_valid():
+        form.save()
+        return redirect("access-code-list")
+
+    context = {"form": form, "page_title": "Edit Access Code"}
+    return render(request, "access_codes/access_code_detail.html", context)
+
+@login_required
+def access_code_create(request):
+    form = AccessCodeEditForm(request.POST or None)
+
+    if form.is_valid():
+        code = form.save(commit=False)
+        code.author = request.user
+        code.save()
+        return redirect("access-code-list")
+
+    context = {"form": form, "page_title": "Create Access Code"}
+    return render(request, "access_codes/access_code_detail.html", context)
+
+@login_required
+def screen_edit_list(request):
+    screens = Screen.objects.get_by_user(request.user)
+    context = {"screen_list": screens, "page_title": "Your Screens"}
+    return render(request, "screens/screen_edit_list.html", context)
+
+@login_required
+def screen_edit_detail(request,pk):
+    screen = get_object_or_404(Screen, pk=pk)
+
+    if screen.author != request.user:
+        raise Http404("Screen does not exist")
+
+    form = ScreenEditForm(request.user,request.POST or None, instance=screen)
+
+    if form.is_valid():
+        if '_preview' in request.POST:
+            screen = form.save(commit=False)
+            context = {"screen": screen, "page_title": "Preview Screen - " + screen.title, "preview": True}
+            return render(request, "screens/screen_detail.html", context)
+        form.save()
+        return redirect("screen-edit-list")
+
+    context = {"form": form, "page_title": "Edit Screen"}
+    return render(request, "screens/screen_edit_detail.html", context)
+
+@login_required
+def screen_create(request):
+    form = ScreenCreateForm(request.user,request.POST or None)
+    
+    if form.is_valid():
+        screen = form.save(commit=False)
+        screen.author = request.user
+        if '_preview' in request.POST:
+            context = {"screen": screen, "page_title": "Preview Screen - " + screen.title, "preview": True}
+            return render(request, "screens/screen_detail.html", context)
+        screen.save()
+        # this saves codes which are m2m fields
+        form.save_m2m()
+        return redirect("screen-edit-list")
+
+    context = {"form": form, "page_title": "Create Screen"}
+    return render(request, "screens/screen_edit_detail.html", context)
 
 @login_required
 def member_message_inbox(request):
