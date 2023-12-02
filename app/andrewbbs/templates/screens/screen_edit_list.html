@@ -6,6 +6,8 @@
   <thead>
     <tr>
       <th>Title</th>
+      <th>Published</th>
+      <th>Codes</th>
       <th>Last Updated</th>
       <th>Created At</th>
     </tr>
@@ -18,11 +20,15 @@
           {{ screen.title }}
         </a>
       </td>
+      <td>{{ screen.published }}</td>
+      <td>
+        {{ screen.codes.all|join:", " }}
+      </td>
       <td>{{ screen.updated_at }}</td>
       <td>{{ screen.created_at }}</td>
     </tr>
 {% endfor %}
   </tbody>
 </table>
-<a href="{% url 'access' %}" class="btn">Create New Screen</a>
+<a href="{% url 'screen-create' %}" class="btn">Create New Screen</a>
 {% endblock %}
