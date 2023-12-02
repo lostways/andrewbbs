@@ -1,0 +1,20 @@
+{% extends 'layout/layout.html' %}
+{% block main %}
+{% url 'access-code-list' as access_codes_url %}
+{% url 'screen-edit-list' as screens_url %}
+<div class="row-fluid">
+  <div class="span12">
+    <ul class="nav nav-list side-bar">
+      <li class="{% if request.path == access_codes_url %}active{% endif %}">
+        <a href="{{access_codes_url}}">Access Codes</a>
+      </li>
+      <li class="{% if request.path == screens_url %}active{% endif %}">
+        <a href="{{screens_url}}">Screens</a>
+      </li>
+    </ul>
+  </div>
+  <div class="col span12 create-content">
+    {% block content %}{% endblock %}
+  </div>
+</div>
+{% endblock %}
