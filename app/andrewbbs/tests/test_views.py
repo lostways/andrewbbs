@@ -1115,28 +1115,3 @@ class ScreenEditTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "screens/screen_edit_detail.html")
         self.assertContains(response, "Screen with this Slug already exists.")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
