@@ -19,5 +19,8 @@ jobs:
       - name: Build App 
         run: make build
 
+      - name: Run App
+        run: make run
+
       - name: Run Tests
-        run: docker-compose run --rm app python manage.py test -v 2
+        run: make test
