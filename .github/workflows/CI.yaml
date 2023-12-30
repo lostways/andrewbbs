@@ -20,7 +20,7 @@ jobs:
         run: make build
 
       - name: Run App
-        run: make run
+        run: docker-compose up -d
 
       - name: Run Tests
         run: make test
