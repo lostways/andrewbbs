@@ -1,0 +1,26 @@
+name: Run CI
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Environments
+        run: |
+          cp .envs/local/.env.example .envs/local/.env
+
+      - name: Build App 
+        run: make build
+
+      - name: Run App
+        run: docker-compose up -d
+
+      - name: Run Tests
+        run: docker-compose exec -T app python manage.py test -v 2

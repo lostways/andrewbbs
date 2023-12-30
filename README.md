@@ -1,3 +1,5 @@
+[![Run CI](https://github.com/lostways/andrewbbs/actions/workflows/CI.yaml/badge.svg)](https://github.com/lostways/andrewbbs/actions/workflows/CI.yaml)
+
 # Andrew BBS
 An experiment in "deep web" content management
 
