@@ -20,4 +20,4 @@ jobs:
         run: make build
 
       - name: Run Tests
-        run: make test
+        run: docker-compose run --rm app python manage.py test -v 2
