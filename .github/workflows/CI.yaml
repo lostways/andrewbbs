@@ -13,10 +13,8 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup Environments
-        run: cp ./.envs/local/.env.example .env
-
-      - name: Display local .env
-        run: cat .env
+        run: |
+          cp .envs/local/.env.example .envs/local/.env
 
       - name: Build App 
         run: make build
